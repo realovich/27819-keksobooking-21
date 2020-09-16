@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Антон Русский](https://up.htmlacademy.ru/javascript/21/user/27819).
-* Наставник: `Неизвестно`.
+* Наставник: `Евгений Новиков`.
 
 ---
 
