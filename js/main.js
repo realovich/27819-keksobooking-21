@@ -13,11 +13,10 @@ const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__
 const getRandomInteger = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
 
 const getRandomArray = (array) => {
-  const randomArrayLength = getRandomInteger(1, array.length);
   let randomArrayElement;
   let randomArray = [];
 
-  for (let i = 0; i < randomArrayLength; i++) {
+  for (let i = 0; i < getRandomInteger(1, array.length); i++) {
     randomArrayElement = array[getRandomInteger(0, array.length - 1)];
 
     if (!randomArray.includes(randomArrayElement)) {
