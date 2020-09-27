@@ -2,6 +2,7 @@
 
 const OFFER_TYPES = [`palace`, `flat`, `house`, `bungalow`];
 const OFFER_FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
+const OFFER_PHOTOS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
 
 const mapElement = document.querySelector(`.map`);
 const mapWidth = mapElement.offsetWidth;
@@ -9,32 +10,53 @@ const mapWidth = mapElement.offsetWidth;
 const pinsListElement = mapElement.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
-const getRandomInteger = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+const getRandomInteger = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
+
+const getRandomArray = (array) => {
+  const randomArrayLength = getRandomInteger(1, array.length);
+  let randomArrayElement;
+  let randomArray = [];
+
+  for (let i = 0; i < randomArrayLength; i++) {
+    randomArrayElement = array[getRandomInteger(0, array.length - 1)];
+
+    if (!randomArray.includes(randomArrayElement)) {
+      randomArray.push(randomArrayElement);
+    }
+  }
+
+  return randomArray;
+};
 
 const renderAdArray = (length) => {
-  const array = [];
+  let array = [];
+  let positionHorizontal;
+  let positionVertical;
 
   for (let i = 0; i < length; i++) {
+    positionHorizontal = getRandomInteger(1, mapWidth);
+    positionVertical = getRandomInteger(130, 630);
+
     array.push({
       'author': {
-        'avatar': `0${i + 1}`
+        'avatar': `0${i + 1}`,
       },
       'offer': {
         'title': `Заголовок`,
-        'address': `600, 350`,
+        'address': `${positionHorizontal}, ${positionVertical}`,
         'price': getRandomInteger(1000, 100000),
-        'type': OFFER_TYPES[getRandomInteger(0, OFFER_TYPES.length)],
-        'rooms': getRandomInteger(1, 4),
+        'type': OFFER_TYPES[getRandomInteger(0, OFFER_TYPES.length - 1)],
+        'rooms': getRandomInteger(1, 3),
         'guests': getRandomInteger(0, 3),
         'checkin': `12:00`,
         'checkout': `13:00`,
-        'features': OFFER_FEATURES,
+        'features': getRandomArray(OFFER_FEATURES),
         'description': `Описание объявления`,
-        'photos': [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`],
+        'photos': getRandomArray(OFFER_PHOTOS),
       },
       'location': {
-        'x': getRandomInteger(1, mapWidth),
-        'y': getRandomInteger(130, 630)
+        'x': positionHorizontal,
+        'y': positionVertical,
       }
     });
   }
