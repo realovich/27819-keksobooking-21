@@ -102,6 +102,18 @@ const renderCard = (ad) => {
     photosContainer.appendChild(photoItem.cloneNode(true));
   });
 
+  const featuresContainer = cardElement.querySelector(`.popup__features`);
+  const featureElements = featuresContainer.children;
+
+  for (let i = featureElements.length - 1; i >= 0; i--) {
+    const featureElement = featureElements[i];
+    featureElement.parentElement.removeChild(featureElement);
+  }
+
+  ad.offer.features.forEach((item) => {
+    featuresContainer.insertAdjacentHTML(`afterbegin`, `<li class="popup__feature popup__feature--${item}">`);
+  });
+
   let offerType;
 
   if (ad.offer.type === `flat`) {
@@ -120,7 +132,6 @@ const renderCard = (ad) => {
   cardElement.querySelector(`.popup__type`).textContent = offerType;
   cardElement.querySelector(`.popup__text--capacity`).textContent = `${ad.offer.rooms} комнаты для ${ad.offer.guests} гостей`;
   cardElement.querySelector(`.popup__text--time`).innerHTML = `Заезд после ${ad.offer.checkin}, выезд&nbsp;до ${ad.offer.checkout}`;
-  cardElement.querySelector(`.popup__features`).textContent = ad.offer.features.join(`, `);
   cardElement.querySelector(`.popup__description`).textContent = ad.offer.description;
   cardElement.querySelector(`.popup__avatar`).src = `img/avatars/user${ad.author.avatar}.png`;
 
