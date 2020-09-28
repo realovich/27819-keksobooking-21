@@ -29,12 +29,10 @@ const getRandomArray = (array) => {
 
 const renderAdArray = (length) => {
   let array = [];
-  let positionHorizontal;
-  let positionVertical;
 
   for (let i = 0; i < length; i++) {
-    positionHorizontal = getRandomInteger(1, mapWidth);
-    positionVertical = getRandomInteger(130, 630);
+    let positionHorizontal = getRandomInteger(1, mapWidth);
+    let positionVertical = getRandomInteger(130, 630);
 
     array.push({
       'author': {
@@ -91,3 +89,50 @@ const renderPinsList = () => {
 mapElement.classList.remove(`map--faded`);
 
 renderPinsList();
+
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
+
+const renderCard = (ad) => {
+  let cardElement = cardTemplate.cloneNode(true);
+  const photosContainer = cardElement.querySelector(`.popup__photos`);
+  const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
+
+  ad.offer.photos.forEach((photoSource) => {
+    photoItem.src = photoSource;
+    photosContainer.appendChild(photoItem.cloneNode(true));
+  });
+
+  let offerType;
+
+  if (ad.offer.type === `flat`) {
+    offerType = `Квартира`;
+  } else if (ad.offer.type === `bungalow`) {
+    offerType = `Бунгало`;
+  } else if (ad.offer.type === `house`) {
+    offerType = `Дом`;
+  } else if (ad.offer.type === `palace`) {
+    offerType = `Дворец`;
+  }
+
+  cardElement.querySelector(`.popup__title`).textContent = ad.offer.title;
+  cardElement.querySelector(`.popup__text--address`).textContent = ad.offer.address;
+  cardElement.querySelector(`.popup__text--price`).textContent = `${ad.offer.price}₽/ночь`;
+  cardElement.querySelector(`.popup__type`).textContent = offerType;
+  cardElement.querySelector(`.popup__text--capacity`).textContent = `${ad.offer.rooms} комнаты для ${ad.offer.guests} гостей`;
+  cardElement.querySelector(`.popup__text--time`).innerHTML = `Заезд после ${ad.offer.checkin}, выезд&nbsp;до ${ad.offer.checkout}`;
+  cardElement.querySelector(`.popup__features`).textContent = ad.offer.features.join(`, `);
+  cardElement.querySelector(`.popup__description`).textContent = ad.offer.description;
+  cardElement.querySelector(`.popup__avatar`).src = `img/avatars/user${ad.author.avatar}.png`;
+
+  return cardElement;
+};
+
+const insertRenderedCard = () => {
+  const fragment = document.createDocumentFragment();
+
+  fragment.appendChild(renderCard(ads[0]));
+
+  mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
+};
+
+insertRenderedCard();
