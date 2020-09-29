@@ -112,34 +112,46 @@ const renderCard = (ad) => {
       break;
   }
 
+  const hideElement = (element) => {
+    cardElement.querySelector(element).classList.add(`hidden`);
+  };
+
   const fillElement = (element, data) => {
     if (data === null || data === undefined) {
-      cardElement.querySelector(element).classList.add(`hidden`);
+      hideElement(element);
     } else {
       cardElement.querySelector(element).textContent = data;
     }
   };
 
   const fillFeatures = (element, data) => {
-    cardElement.querySelector(element).textContent = ``;
-    data.forEach((item) => {
-      cardElement.querySelector(element).insertAdjacentHTML(`afterbegin`, `<li class="popup__feature popup__feature--${item}">`);
-    });
+    if (data === null || data === undefined) {
+      hideElement(element);
+    } else {
+      cardElement.querySelector(element).textContent = ``;
+      data.forEach((item) => {
+        cardElement.querySelector(element).insertAdjacentHTML(`afterbegin`, `<li class="popup__feature popup__feature--${item}">`);
+      });
+    }
   };
 
   const fillPhotos = (element, data) => {
-    const photosContainer = cardElement.querySelector(element);
-    const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
+    if (data === null || data === undefined) {
+      hideElement(element);
+    } else {
+      const photosContainer = cardElement.querySelector(element);
+      const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
 
-    data.forEach((photoSource) => {
-      photoItem.src = photoSource;
-      photosContainer.appendChild(photoItem.cloneNode(true));
-    });
+      data.forEach((photoSource) => {
+        photoItem.src = photoSource;
+        photosContainer.appendChild(photoItem.cloneNode(true));
+      });
+    }
   };
 
   const fillCapacity = (element, dataRooms, dataGuests) => {
     if (dataRooms === null || dataGuests === null || dataRooms === undefined || dataGuests === undefined) {
-      cardElement.querySelector(element).classList.add(`hidden`);
+      hideElement(element);
     } else {
       cardElement.querySelector(element).textContent = `${dataRooms} комнаты для ${dataGuests} гостей`;
     }
@@ -147,7 +159,7 @@ const renderCard = (ad) => {
 
   const fillTime = (element, dataCheckin, dataCheckout) => {
     if (dataCheckin === null || dataCheckout === null || dataCheckin === undefined || dataCheckout === undefined) {
-      cardElement.querySelector(element).classList.add(`hidden`);
+      hideElement(element);
     } else {
       cardElement.querySelector(element).textContent = `Заезд после ${dataCheckin}, выезд до ${dataCheckout}`;
     }
@@ -155,7 +167,7 @@ const renderCard = (ad) => {
 
   const fillAvatar = (element, data) => {
     if (data === null || data === undefined) {
-      cardElement.querySelector(element).classList.add(`hidden`);
+      hideElement(element);
     } else {
       cardElement.querySelector(element).src = `img/avatars/user${data}.png`;
     }
