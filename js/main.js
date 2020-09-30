@@ -92,13 +92,7 @@ renderPinsList();
 
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
-const showConditions = (dataFirst, dataSecond) => {
-  if (dataSecond) {
-    return (dataFirst === null || dataFirst === undefined || dataFirst === `` || dataSecond === null || dataSecond === undefined || dataSecond === ``);
-  }
-
-  return (dataFirst === null || dataFirst === undefined || dataFirst === ``);
-};
+const showConditions = (data) => (data === null || data === undefined || data === ``);
 
 const hideElement = (cardElement, element) => {
   cardElement.querySelector(element).classList.add(`hidden`);
@@ -160,7 +154,7 @@ const fillPhotos = (cardElement, element, data) => {
 };
 
 const fillCapacity = (cardElement, element, dataRooms, dataGuests) => {
-  if (showConditions(dataRooms, dataGuests)) {
+  if (showConditions(dataRooms) || showConditions(dataGuests)) {
     hideElement(cardElement, element);
   } else {
     cardElement.querySelector(element).textContent = `${dataRooms} ${declinationOfNumber(dataRooms, [`комната`, `комнаты`, `комнат`])} для ${dataGuests} ${declinationOfNumber(dataGuests, [`гостя`, `гостей`, `гостей`])}`;
@@ -168,7 +162,7 @@ const fillCapacity = (cardElement, element, dataRooms, dataGuests) => {
 };
 
 const fillTime = (cardElement, element, dataCheckin, dataCheckout) => {
-  if (showConditions(dataCheckin, dataCheckout)) {
+  if (showConditions(dataCheckin) || showConditions(dataCheckout)) {
     hideElement(cardElement, element);
   } else {
     cardElement.querySelector(element).textContent = `Заезд после ${dataCheckin}, выезд до ${dataCheckout}`;
