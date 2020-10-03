@@ -3,6 +3,8 @@
 const OFFER_TYPES = [`palace`, `flat`, `house`, `bungalow`];
 const OFFER_FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 const OFFER_PHOTOS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
 
 const mapElement = document.querySelector(`.map`);
 const mapWidth = mapElement.offsetWidth;
@@ -66,10 +68,8 @@ const ads = renderAdArray(8);
 const renderPin = (ad) => {
   let pinElement = pinTemplate.cloneNode(true);
   let pinElementImage = pinElement.querySelector(`img`);
-  const pinWidth = 50;
-  const pinHeight = 70;
 
-  pinElement.setAttribute(`style`, `left: ${ad.location.x - (pinWidth / 2)}px; top: ${ad.location.y - pinHeight}px`);
+  pinElement.setAttribute(`style`, `left: ${ad.location.x - (PIN_WIDTH / 2)}px; top: ${ad.location.y - PIN_HEIGHT}px`);
   pinElementImage.src = `img/avatars/user${ad.author.avatar}.png`;
   pinElementImage.alt = ad.offer.title;
 
@@ -86,10 +86,7 @@ const renderPinsList = () => {
   pinsListElement.appendChild(fragment);
 };
 
-mapElement.classList.remove(`map--faded`);
-
-renderPinsList();
-
+/*
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
 const showConditions = (data) => (data === null || data === undefined || data === ``);
@@ -220,3 +217,85 @@ const insertRenderedCard = () => {
 };
 
 insertRenderedCard();
+*/
+
+const filterForm = document.querySelector(`.map__filters`);
+const adForm = document.querySelector(`.ad-form`);
+const filterFormControls = filterForm.children;
+const adFormControls = adForm.children;
+const mainPin = mapElement.querySelector(`.map__pin--main`);
+const fieldAddress = adForm.querySelector(`#address`);
+const fieldRoomNumber = adForm.querySelector(`#room_number`);
+const fieldCapacity = adForm.querySelector(`#capacity`);
+
+const setDefaultAddress = () => {
+
+  const verticalPosition = parseInt(mainPin.style.top, 10) - Math.round(mainPin.offsetHeight / 2);
+  const horizontalPosition = parseInt(mainPin.style.left, 10) - Math.round(mainPin.offsetWidth / 2);
+
+  fieldAddress.value = `${horizontalPosition}, ${verticalPosition}`;
+};
+
+const setCustomAddress = () => {
+  const verticalPosition = parseInt(mainPin.style.top, 10) - Math.round(PIN_WIDTH / 2);
+  const horizontalPosition = parseInt(mainPin.style.left, 10) - PIN_HEIGHT;
+
+  fieldAddress.value = `${horizontalPosition}, ${verticalPosition}`;
+};
+
+const disableControls = (controls) => {
+  for (let i = 0; i < controls.length; i++) {
+    controls[i].setAttribute(`disabled`, ``);
+  }
+};
+
+const enableControls = (controls) => {
+  for (let i = 0; i < controls.length; i++) {
+    controls[i].removeAttribute(`disabled`, ``);
+  }
+};
+
+const deactivatePage = () => {
+  mapElement.classList.add(`map--faded`);
+  disableControls(filterFormControls);
+  disableControls(adFormControls);
+  setDefaultAddress();
+};
+
+const activatePage = () => {
+  mapElement.classList.remove(`map--faded`);
+  adForm.classList.remove(`ad-form--disabled`);
+  enableControls(filterFormControls);
+  enableControls(adFormControls);
+  setCustomAddress();
+  renderPinsList();
+  adForm.addEventListener(`change`, synchronizeCapacityRoomNumbers);
+};
+
+const synchronizeCapacityRoomNumbers = () => {
+  if (fieldRoomNumber.value === `1` && fieldCapacity.value !== `1`) {
+    fieldCapacity.setCustomValidity(`1 комната для 1-го гостя`);
+  } else if (fieldRoomNumber.value === `2` && (fieldCapacity.value > 2 || fieldCapacity.value === `0`)) {
+    fieldCapacity.setCustomValidity(`2 комнаты для 1-го или 2-х гостей`);
+  } else if (fieldRoomNumber.value === `3` && fieldCapacity.value < 1) {
+    fieldCapacity.setCustomValidity(`3 комнаты для 1-го, 2-х или 3-х гостей`);
+  } else if (fieldRoomNumber.value > 3 && fieldCapacity.value !== `0`) {
+    fieldCapacity.setCustomValidity(`100 комнат не для гостей`);
+  } else {
+    fieldCapacity.setCustomValidity(``);
+  }
+};
+
+mainPin.addEventListener(`mousedown`, (evt) => {
+  if (evt.button === 0) {
+    activatePage();
+  }
+});
+
+mainPin.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    activatePage();
+  }
+});
+
+deactivatePage();
