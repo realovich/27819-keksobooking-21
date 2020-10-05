@@ -229,16 +229,15 @@ const fieldRoomNumber = adForm.querySelector(`#room_number`);
 const fieldCapacity = adForm.querySelector(`#capacity`);
 
 const setDefaultAddress = () => {
-
-  const verticalPosition = parseInt(mainPin.style.top, 10) - Math.round(mainPin.offsetHeight / 2);
-  const horizontalPosition = parseInt(mainPin.style.left, 10) - Math.round(mainPin.offsetWidth / 2);
+  const horizontalPosition = parseInt(mainPin.style.left, 10) + Math.round(mainPin.offsetWidth / 2);
+  const verticalPosition = parseInt(mainPin.style.top, 10) + Math.round(mainPin.offsetHeight / 2);
 
   fieldAddress.value = `${horizontalPosition}, ${verticalPosition}`;
 };
 
 const setCustomAddress = () => {
-  const verticalPosition = parseInt(mainPin.style.top, 10) - Math.round(PIN_WIDTH / 2);
-  const horizontalPosition = parseInt(mainPin.style.left, 10) - PIN_HEIGHT;
+  const horizontalPosition = parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2);
+  const verticalPosition = parseInt(mainPin.style.top, 10) + PIN_HEIGHT;
 
   fieldAddress.value = `${horizontalPosition}, ${verticalPosition}`;
 };
