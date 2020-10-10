@@ -277,16 +277,18 @@ const addChangeListener = (element, cb) => {
 };
 
 const addFormValidation = (evt) => {
-  if (evt.target) {
-    if (evt.target.matches(`#timein`)) {
-      fieldTimeOut.value = fieldTimeIn.value;
-    } else if (evt.target.matches(`#timeout`)) {
-      fieldTimeIn.value = fieldTimeOut.value;
-    } else if (evt.target.matches(`#room_number`) || evt.target.matches(`#capacity`)) {
-      synchronizeCapacityRoomNumbersFields();
-    } else if (evt.target.matches(`#type`)) {
-      synchronizeTypePriceFields();
-    }
+  const {target} = evt;
+  
+  if (!target) {
+    return;
+  } else if (target.matches(`#timein`)) {
+    fieldTimeOut.value = fieldTimeIn.value;
+  } else if (target.matches(`#timeout`)) {
+    fieldTimeIn.value = fieldTimeOut.value;
+  } else if (target.matches(`#room_number`) || target.matches(`#capacity`)) {
+    synchronizeCapacityRoomNumbersFields();
+  } else if (target.matches(`#type`)) {
+    synchronizeTypePriceFields();
   }
 };
 
@@ -305,25 +307,17 @@ const synchronizeCapacityRoomNumbersFields = () => {
 };
 
 const synchronizeTypePriceFields = () => {
-  let minPrice;
+  const fieldTypeValue = fieldType.value;
 
-  switch (fieldType.value) {
-    case `bungalow`:
-      minPrice = 0;
-      break;
-    case `flat`:
-      minPrice = 1000;
-      break;
-    case `house`:
-      minPrice = 5000;
-      break;
-    case `palace`:
-      minPrice = 10000;
-      break;
-  }
+  const minPriceType = {
+    bungalow: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
 
-  fieldPrice.setAttribute(`placeholder`, minPrice);
-  fieldPrice.setAttribute(`min`, minPrice);
+  fieldPrice.setAttribute(`placeholder`, minPriceType[fieldTypeValue]);
+  fieldPrice.setAttribute(`min`, minPriceType[fieldTypeValue]);
 };
 
 mainPin.addEventListener(`mousedown`, (evt) => {
@@ -364,25 +358,37 @@ const openAdCard = (evt) => {
   const targetParent = target.closest(`[type="button"]`);
 
   if (target && targetParent) {
-    insertRenderedCard(Number(targetParent.dataset.pinId));
-    targetParent.classList.add(`map__pin--active`);
-
-    const adCard = document.querySelector(`.popup`);
-    const adCardClose = adCard.querySelector(`.popup__close`);
+    let adCard = document.querySelector(`.popup`);
 
     const closeAdCard = () => {
       adCard.remove();
-      targetParent.classList.remove(`map__pin--active`);
+      
+      const mapPins = document.querySelectorAll(`.map__pin`);
+
+      for (let mapPin of mapPins) {
+        mapPin.classList.remove(`map__pin--active`);
+      }
+
       addClickListener(pinsListElement, openAdCard);
     };
+    
+
+    if (adCard) {
+      closeAdCard();
+    }
+
+    insertRenderedCard(Number(targetParent.dataset.pinId));
+    targetParent.classList.add(`map__pin--active`);
+
+    adCard = document.querySelector(`.popup`);
+
+    const adCardClose = adCard.querySelector(`.popup__close`);
 
     addClickListener(adCardClose, closeAdCard);
 
     addKeyDownListener(document, (keyEvt) => {
       setEscapeEvent(keyEvt, closeAdCard);
     });
-
-    removeClickListener(pinsListElement, openAdCard);
   }
 };
 
