@@ -210,10 +210,12 @@ const renderCard = (ad) => {
 
 const insertRenderedCard = (cardNumber) => {
   const fragment = document.createDocumentFragment();
+  const renderedCard = renderCard(ads[cardNumber]);
 
-  fragment.appendChild(renderCard(ads[cardNumber]));
-
+  fragment.appendChild(renderedCard);
   mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
+
+  return renderedCard;
 };
 
 const filterForm = document.querySelector(`.map__filters`);
@@ -353,43 +355,37 @@ const setEscapeEvent = (evt, action) => {
   }
 };
 
+const activePinClass = `map__pin--active`;
+
+const closeAdCard = () => {
+  const activePin = mapElement.querySelector(`.${activePinClass}`);
+  const adCard = mapElement.querySelector(`.map__card`);
+
+  if (activePin) {
+    activePin.classList.remove(activePinClass);
+    adCard.remove();
+  }
+};
+
 const openAdCard = (evt) => {
   const {target} = evt;
   const targetParent = target.closest(`[type="button"]`);
 
   if (target && targetParent) {
-    let adCard = document.querySelector(`.popup`);
+    const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
 
-    const closeAdCard = () => {
-      adCard.remove();
-      
-      const mapPins = document.querySelectorAll(`.map__pin`);
+    closeAdCard();
 
-      for (let mapPin of mapPins) {
-        mapPin.classList.remove(`map__pin--active`);
-      }
+    renderedAdCard;
+    targetParent.classList.add(activePinClass);
 
-      addClickListener(pinsListElement, openAdCard);
-    };
-    
-
-    if (adCard) {
-      closeAdCard();
-    }
-
-    insertRenderedCard(Number(targetParent.dataset.pinId));
-    targetParent.classList.add(`map__pin--active`);
-
-    adCard = document.querySelector(`.popup`);
-
-    const adCardClose = adCard.querySelector(`.popup__close`);
-
+    const adCardClose = renderedAdCard.querySelector(`.popup__close`);
     addClickListener(adCardClose, closeAdCard);
-
-    addKeyDownListener(document, (keyEvt) => {
-      setEscapeEvent(keyEvt, closeAdCard);
-    });
   }
 };
+
+addKeyDownListener(document, (keyEvt) => {
+  setEscapeEvent(keyEvt, closeAdCard);
+});
 
 addClickListener(pinsListElement, openAdCard);
