@@ -5,6 +5,7 @@ const OFFER_FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `
 const OFFER_PHOTOS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
+const ACTIVE_PIN_CLASS = `map__pin--active`;
 
 const mapElement = document.querySelector(`.map`);
 const mapWidth = mapElement.offsetWidth;
@@ -355,14 +356,13 @@ const setEscapeEvent = (evt, action) => {
   }
 };
 
-const activePinClass = `map__pin--active`;
-
 const closeAdCard = () => {
-  const activePin = mapElement.querySelector(`.${activePinClass}`);
-  const adCard = mapElement.querySelector(`.map__card`);
+  const activePin = mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`);
 
   if (activePin) {
-    activePin.classList.remove(activePinClass);
+    const adCard = mapElement.querySelector(`.map__card`);
+
+    activePin.classList.remove(ACTIVE_PIN_CLASS);
     adCard.remove();
   }
 };
@@ -372,12 +372,11 @@ const openAdCard = (evt) => {
   const targetParent = target.closest(`[type="button"]`);
 
   if (target && targetParent) {
+    closeAdCard();
+    
     const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
 
-    closeAdCard();
-
-    renderedAdCard;
-    targetParent.classList.add(activePinClass);
+    targetParent.classList.add(ACTIVE_PIN_CLASS);
 
     const adCardClose = renderedAdCard.querySelector(`.popup__close`);
     addClickListener(adCardClose, closeAdCard);
