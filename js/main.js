@@ -281,7 +281,7 @@ const addChangeListener = (element, cb) => {
 
 const addFormValidation = (evt) => {
   const {target} = evt;
-  
+
   if (!target) {
     return;
   } else if (target.matches(`#timein`)) {
@@ -341,10 +341,6 @@ const addClickListener = (element, cb) => {
   element.addEventListener(`click`, cb);
 };
 
-const removeClickListener = (element, cb) => {
-  element.removeEventListener(`click`, cb);
-};
-
 const addKeyDownListener = (element, cb) => {
   element.addEventListener(`keydown`, cb);
 };
@@ -373,7 +369,7 @@ const openAdCard = (evt) => {
 
   if (target && targetParent) {
     closeAdCard();
-    
+
     const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
 
     targetParent.classList.add(ACTIVE_PIN_CLASS);
