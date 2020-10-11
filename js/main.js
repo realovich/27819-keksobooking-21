@@ -5,6 +5,7 @@ const OFFER_FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `
 const OFFER_PHOTOS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
+const ACTIVE_PIN_CLASS = `map__pin--active`;
 
 const mapElement = document.querySelector(`.map`);
 const mapWidth = mapElement.offsetWidth;
@@ -38,7 +39,7 @@ const renderAdArray = (length) => {
 
     array.push({
       'author': {
-        'avatar': `0${i + 1}`,
+        'avatar': `img/avatars/user0${i + 1}.png`,
       },
       'offer': {
         'title': `Заголовок`,
@@ -65,12 +66,13 @@ const renderAdArray = (length) => {
 
 const ads = renderAdArray(8);
 
-const renderPin = (ad) => {
+const renderPin = (ad, index) => {
   let pinElement = pinTemplate.cloneNode(true);
   let pinElementImage = pinElement.querySelector(`img`);
 
   pinElement.setAttribute(`style`, `left: ${ad.location.x - (PIN_WIDTH / 2)}px; top: ${ad.location.y - PIN_HEIGHT}px`);
-  pinElementImage.src = `img/avatars/user${ad.author.avatar}.png`;
+  pinElement.dataset.pinId = index;
+  pinElementImage.src = ad.author.avatar;
   pinElementImage.alt = ad.offer.title;
 
   return pinElement;
@@ -80,13 +82,12 @@ const renderPinsList = () => {
   const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < ads.length; i++) {
-    fragment.appendChild(renderPin(ads[i]));
+    fragment.appendChild(renderPin(ads[i], i));
   }
 
   pinsListElement.appendChild(fragment);
 };
 
-/*
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
 const showConditions = (data) => (data === null || data === undefined || data === ``);
@@ -170,7 +171,7 @@ const fillAvatar = (cardElement, element, data) => {
   if (showConditions(data)) {
     hideElement(cardElement, element);
   } else {
-    cardElement.querySelector(element).src = `img/avatars/user${data}.png`;
+    cardElement.querySelector(element).src = data;
   }
 };
 
@@ -208,16 +209,15 @@ const renderCard = (ad) => {
   return cardElement;
 };
 
-const insertRenderedCard = () => {
+const insertRenderedCard = (cardNumber) => {
   const fragment = document.createDocumentFragment();
+  const renderedCard = renderCard(ads[cardNumber]);
 
-  fragment.appendChild(renderCard(ads[0]));
-
+  fragment.appendChild(renderedCard);
   mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
-};
 
-insertRenderedCard();
-*/
+  return renderedCard;
+};
 
 const filterForm = document.querySelector(`.map__filters`);
 const adForm = document.querySelector(`.ad-form`);
@@ -227,6 +227,10 @@ const mainPin = mapElement.querySelector(`.map__pin--main`);
 const fieldAddress = adForm.querySelector(`#address`);
 const fieldRoomNumber = adForm.querySelector(`#room_number`);
 const fieldCapacity = adForm.querySelector(`#capacity`);
+const fieldType = adForm.querySelector(`#type`);
+const fieldPrice = adForm.querySelector(`#price`);
+const fieldTimeIn = adForm.querySelector(`#timein`);
+const fieldTimeOut = adForm.querySelector(`#timeout`);
 
 const setDefaultAddress = () => {
   const horizontalPosition = parseInt(mainPin.style.left, 10) + Math.round(mainPin.offsetWidth / 2);
@@ -266,12 +270,32 @@ const activatePage = () => {
   adForm.classList.remove(`ad-form--disabled`);
   enableControls(filterFormControls);
   enableControls(adFormControls);
-  setCustomAddress();
   renderPinsList();
-  adForm.addEventListener(`change`, synchronizeCapacityRoomNumbers);
+  setCustomAddress();
+  addChangeListener(adForm, (evt) => addFormValidation(evt));
 };
 
-const synchronizeCapacityRoomNumbers = () => {
+const addChangeListener = (element, cb) => {
+  element.addEventListener(`change`, cb);
+};
+
+const addFormValidation = (evt) => {
+  const {target} = evt;
+
+  if (!target) {
+    return;
+  } else if (target.matches(`#timein`)) {
+    fieldTimeOut.value = fieldTimeIn.value;
+  } else if (target.matches(`#timeout`)) {
+    fieldTimeIn.value = fieldTimeOut.value;
+  } else if (target.matches(`#room_number`) || target.matches(`#capacity`)) {
+    synchronizeCapacityRoomNumbersFields();
+  } else if (target.matches(`#type`)) {
+    synchronizeTypePriceFields();
+  }
+};
+
+const synchronizeCapacityRoomNumbersFields = () => {
   if (fieldRoomNumber.value === `1` && fieldCapacity.value !== `1`) {
     fieldCapacity.setCustomValidity(`1 комната для 1-го гостя`);
   } else if (fieldRoomNumber.value === `2` && (fieldCapacity.value > 2 || fieldCapacity.value === `0`)) {
@@ -283,6 +307,20 @@ const synchronizeCapacityRoomNumbers = () => {
   } else {
     fieldCapacity.setCustomValidity(``);
   }
+};
+
+const synchronizeTypePriceFields = () => {
+  const fieldTypeValue = fieldType.value;
+
+  const minPriceType = {
+    bungalow: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
+  fieldPrice.setAttribute(`placeholder`, minPriceType[fieldTypeValue]);
+  fieldPrice.setAttribute(`min`, minPriceType[fieldTypeValue]);
 };
 
 mainPin.addEventListener(`mousedown`, (evt) => {
@@ -298,3 +336,51 @@ mainPin.addEventListener(`keydown`, (evt) => {
 });
 
 deactivatePage();
+
+const addClickListener = (element, cb) => {
+  element.addEventListener(`click`, cb);
+};
+
+const addKeyDownListener = (element, cb) => {
+  element.addEventListener(`keydown`, cb);
+};
+
+const setEscapeEvent = (evt, action) => {
+  if (evt.key === `Escape`) {
+    evt.preventDefault();
+    action();
+  }
+};
+
+const closeAdCard = () => {
+  const activePin = mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`);
+
+  if (activePin) {
+    const adCard = mapElement.querySelector(`.map__card`);
+
+    activePin.classList.remove(ACTIVE_PIN_CLASS);
+    adCard.remove();
+  }
+};
+
+const openAdCard = (evt) => {
+  const {target} = evt;
+  const targetParent = target.closest(`[type="button"]`);
+
+  if (target && targetParent) {
+    closeAdCard();
+
+    const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
+
+    targetParent.classList.add(ACTIVE_PIN_CLASS);
+
+    const adCardClose = renderedAdCard.querySelector(`.popup__close`);
+    addClickListener(adCardClose, closeAdCard);
+  }
+};
+
+addKeyDownListener(document, (keyEvt) => {
+  setEscapeEvent(keyEvt, closeAdCard);
+});
+
+addClickListener(pinsListElement, openAdCard);
