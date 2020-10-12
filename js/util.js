@@ -50,6 +50,6 @@
     setEscapeEvent,
     setEnterEvent,
     setMainMouseButtonEvent,
-    Events,
+    Events
   };
 })();

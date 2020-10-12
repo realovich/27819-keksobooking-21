@@ -118,6 +118,6 @@
   };
 
   window.card = {
-    insertRenderedCard,
+    insertRenderedCard
   };
 })();
