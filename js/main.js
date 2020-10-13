@@ -4,6 +4,6 @@
 
   window.form.deactivatePage();
 
-  window.map.addListenersOnPin();
+  window.map.addListenersForActivatePage();
 
 })();

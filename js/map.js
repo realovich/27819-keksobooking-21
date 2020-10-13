@@ -6,6 +6,11 @@
   const ACTIVE_PIN_CLASS = `map__pin--active`;
   const FADED_CLASS = `map--faded`;
 
+  const Keys = {
+    ESCAPE: `Escape`,
+    ENTER: `Enter`
+  };
+
   const mapElement = document.querySelector(`.map`);
   const mainPin = mapElement.querySelector(`.map__pin--main`);
 
@@ -13,8 +18,8 @@
   const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
   const renderPin = (ad, index) => {
-    let pinElement = pinTemplate.cloneNode(true);
-    let pinElementImage = pinElement.querySelector(`img`);
+    const pinElement = pinTemplate.cloneNode(true);
+    const pinElementImage = pinElement.querySelector(`img`);
 
     pinElement.setAttribute(`style`, `left: ${ad.location.x - (PIN_WIDTH / 2)}px; top: ${ad.location.y - PIN_HEIGHT}px`);
     pinElement.dataset.pinId = index;
@@ -27,8 +32,8 @@
   const renderPinsList = () => {
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < window.data.getAds.length; i++) {
-      fragment.appendChild(renderPin(window.data.getAds[i], i));
+    for (let i = 0; i < window.data.renderedAdArray.length; i++) {
+      fragment.appendChild(renderPin(window.data.renderedAdArray[i], i));
     }
 
     pinsListElement.appendChild(fragment);
@@ -61,19 +66,18 @@
     }
   };
 
-  document.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-    window.util.setEscapeEvent(evt, closeAdCard);
-  });
-
-  pinsListElement.addEventListener(window.util.Events.CLICK, openAdCard);
-
-  const addListenersOnPin = () => {
+  const addListenersForActivatePage = () => {
     mainPin.addEventListener(window.util.Events.MOUSEDOWN, (evt) => {
-      window.util.setMainMouseButtonEvent(evt, window.form.activatePage);
+      if (evt.button === 0) {
+        window.form.activatePage();
+      }
     });
 
     mainPin.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-      window.util.setEnterEvent(evt, window.form.activatePage);
+      if (evt.key === Keys.ENTER) {
+        evt.preventDefault();
+        window.form.activatePage();
+      }
     });
   };
 
@@ -81,16 +85,30 @@
     mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
   };
 
+  const getPinCoordinates = (isDefault) => {
+    if (isDefault) {
+      return `${parseInt(mainPin.style.left, 10) + Math.round(mainPin.offsetWidth / 2)}, ${parseInt(mainPin.style.top, 10) + Math.round(mainPin.offsetHeight / 2)}`;
+    }
+
+    return `${parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2)}, ${parseInt(mainPin.style.top, 10) + PIN_HEIGHT}`;
+  };
+
+  document.addEventListener(window.util.Events.KEYDOWN, (evt) => {
+    if (evt.key === Keys.ESCAPE) {
+      evt.preventDefault();
+      closeAdCard();
+    }
+  });
+
+  pinsListElement.addEventListener(window.util.Events.CLICK, openAdCard);
+
   window.map = {
     renderPinsList,
-    getWidth: mapElement.offsetWidth,
-    getPinDefaultHorizontal: () => parseInt(mainPin.style.left, 10) + Math.round(mainPin.offsetWidth / 2),
-    getPinDefaultVertical: () => parseInt(mainPin.style.top, 10) + Math.round(mainPin.offsetHeight / 2),
-    getPinCustomHorizontal: () => parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2),
-    getPinCustomVertical: () => parseInt(mainPin.style.top, 10) + PIN_HEIGHT,
+    getPinCoordinates,
     addFadedClass: () => mapElement.classList.add(FADED_CLASS),
     removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
-    addListenersOnPin,
-    setFragmentPlace
+    addListenersForActivatePage,
+    setFragmentPlace,
+    width: mapElement.offsetWidth
   };
 })();

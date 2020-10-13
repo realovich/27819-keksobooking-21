@@ -24,7 +24,7 @@
     let array = [];
 
     for (let i = 0; i < length; i++) {
-      let positionHorizontal = window.util.getRandomInteger(1, window.map.getWidth);
+      let positionHorizontal = window.util.getRandomInteger(1, window.map.width);
       let positionVertical = window.util.getRandomInteger(130, 630);
 
       array.push({
@@ -57,6 +57,6 @@
   const renderedAdArray = renderAdArray(8);
 
   window.data = {
-    getAds: renderedAdArray
+    renderedAdArray
   };
 })();

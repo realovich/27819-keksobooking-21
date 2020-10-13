@@ -1,36 +1,50 @@
 'use strict';
 
 (() => {
-  const CHANGE_EVENT = `change`;
+  const AD_FORM_DISABLED_CLASS = `ad-form--disabled`;
+  const FIELD_ADDRESS_ID = `#address`;
+  const FIELD_ROOM_NUMBER_ID = `#room_number`;
+  const FIELD_CAPACITY_ID = `#capacity`;
+  const FIELD_TYPE_ID = `#type`;
+  const FIELD_PRICE_ID = `#price`;
+  const FIELD_TIMEIN_ID = `#timein`;
+  const FIELD_TIMEOUT_ID = `#timeout`;
+
+  const FormAttributes = {
+    DISABLED: `disabled`,
+    MIN: `min`,
+    PLACEHOLDER: `placeholder`
+  };
+
   const filterForm = document.querySelector(`.map__filters`);
   const adForm = document.querySelector(`.ad-form`);
   const filterControls = filterForm.children;
   const adControls = adForm.children;
-  const fieldAddress = adForm.querySelector(`#address`);
-  const fieldRoomNumber = adForm.querySelector(`#room_number`);
-  const fieldCapacity = adForm.querySelector(`#capacity`);
-  const fieldType = adForm.querySelector(`#type`);
-  const fieldPrice = adForm.querySelector(`#price`);
-  const fieldTimeIn = adForm.querySelector(`#timein`);
-  const fieldTimeOut = adForm.querySelector(`#timeout`);
+  const fieldAddress = adForm.querySelector(FIELD_ADDRESS_ID);
+  const fieldRoomNumber = adForm.querySelector(FIELD_ROOM_NUMBER_ID);
+  const fieldCapacity = adForm.querySelector(FIELD_CAPACITY_ID);
+  const fieldType = adForm.querySelector(FIELD_TYPE_ID);
+  const fieldPrice = adForm.querySelector(FIELD_PRICE_ID);
+  const fieldTimeIn = adForm.querySelector(FIELD_TIMEIN_ID);
+  const fieldTimeOut = adForm.querySelector(FIELD_TIMEOUT_ID);
 
   const setDefaultAddress = () => {
-    fieldAddress.value = `${window.map.getPinDefaultHorizontal()}, ${window.map.getPinDefaultVertical()}`;
+    fieldAddress.value = window.map.getPinCoordinates(true);
   };
 
   const setCustomAddress = () => {
-    fieldAddress.value = `${window.map.getPinCustomHorizontal()}, ${window.map.getPinCustomVertical()}`;
+    fieldAddress.value = window.map.getPinCoordinates();
   };
 
   const disableControls = (controls) => {
     for (let i = 0; i < controls.length; i++) {
-      controls[i].setAttribute(`disabled`, ``);
+      controls[i].setAttribute(FormAttributes.DISABLED, ``);
     }
   };
 
   const enableControls = (controls) => {
     for (let i = 0; i < controls.length; i++) {
-      controls[i].removeAttribute(`disabled`, ``);
+      controls[i].removeAttribute(FormAttributes.DISABLED, ``);
     }
   };
 
@@ -41,13 +55,13 @@
       return;
     }
 
-    if (target.matches(`#timein`)) {
+    if (target.matches(FIELD_TIMEIN_ID)) {
       fieldTimeOut.value = fieldTimeIn.value;
-    } else if (target.matches(`#timeout`)) {
+    } else if (target.matches(FIELD_TIMEOUT_ID)) {
       fieldTimeIn.value = fieldTimeOut.value;
-    } else if (target.matches(`#room_number`) || target.matches(`#capacity`)) {
+    } else if (target.matches(FIELD_ROOM_NUMBER_ID) || target.matches(FIELD_CAPACITY_ID)) {
       synchronizeCapacityRoomNumbersFields();
-    } else if (target.matches(`#type`)) {
+    } else if (target.matches(FIELD_TYPE_ID)) {
       synchronizeTypePriceFields();
     }
   };
@@ -76,18 +90,18 @@
       palace: 10000
     };
 
-    fieldPrice.setAttribute(`placeholder`, minPriceType[fieldTypeValue]);
-    fieldPrice.setAttribute(`min`, minPriceType[fieldTypeValue]);
+    fieldPrice.setAttribute(FormAttributes.PLACEHOLDER, minPriceType[fieldTypeValue]);
+    fieldPrice.setAttribute(FormAttributes.MIN, minPriceType[fieldTypeValue]);
   };
 
   const activatePage = () => {
     window.map.removeFadedClass();
-    adForm.classList.remove(`ad-form--disabled`);
+    adForm.classList.remove(AD_FORM_DISABLED_CLASS);
     enableControls(filterControls);
     enableControls(adControls);
     window.map.renderPinsList();
     setCustomAddress();
-    adForm.addEventListener(CHANGE_EVENT, (evt) => window.form.addFormValidation(evt));
+    adForm.addEventListener(window.util.Events.CHANGE, (evt) => window.form.addFormValidation(evt));
   };
 
   const deactivatePage = () => {

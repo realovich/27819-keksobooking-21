@@ -6,6 +6,7 @@
     KEYDOWN: `keydown`,
     MOUSEDOWN: `mousedown`,
     MOUSEUP: `mouseup`,
+    CHANGE: `change`
   };
 
   const getRandomInteger = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
@@ -24,32 +25,9 @@
     return words[2];
   };
 
-  const setEscapeEvent = (evt, action) => {
-    if (evt.key === `Escape`) {
-      evt.preventDefault();
-      action();
-    }
-  };
-
-  const setMainMouseButtonEvent = (evt, action) => {
-    if (evt.button === 0) {
-      action();
-    }
-  };
-
-  const setEnterEvent = (evt, action) => {
-    if (evt.key === `Enter`) {
-      evt.preventDefault();
-      action();
-    }
-  };
-
   window.util = {
     getRandomInteger,
     declinationOfNumber,
-    setEscapeEvent,
-    setEnterEvent,
-    setMainMouseButtonEvent,
     Events
   };
 })();
