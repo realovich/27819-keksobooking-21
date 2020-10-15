@@ -6,7 +6,7 @@
   const ACTIVE_PIN_CLASS = `map__pin--active`;
   const FADED_CLASS = `map--faded`;
 
-  const Keys = {
+  const Key = {
     ESCAPE: `Escape`,
     ENTER: `Enter`
   };
@@ -29,11 +29,13 @@
     return pinElement;
   };
 
-  const renderPinsList = () => {
+  const renderPinsList = (ads) => {
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < window.data.renderedAdArray.length; i++) {
-      fragment.appendChild(renderPin(window.data.renderedAdArray[i], i));
+    for (let i = 0; i < ads.length; i++) {
+      if (ads[i].offer) {
+        fragment.appendChild(renderPin(ads[i], i));
+      }
     }
 
     pinsListElement.appendChild(fragment);
@@ -62,19 +64,19 @@
       targetParent.classList.add(ACTIVE_PIN_CLASS);
 
       const adCardClose = renderedAdCard.querySelector(`.popup__close`);
-      adCardClose.addEventListener(window.util.Events.CLICK, closeAdCard);
+      adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
     }
   };
 
   const addListenersForActivatePage = () => {
-    mainPin.addEventListener(window.util.Events.MOUSEDOWN, (evt) => {
+    mainPin.addEventListener(window.util.Event.MOUSEDOWN, (evt) => {
       if (evt.button === 0) {
         window.form.activatePage();
       }
     });
 
-    mainPin.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-      if (evt.key === Keys.ENTER) {
+    mainPin.addEventListener(window.util.Event.KEYDOWN, (evt) => {
+      if (evt.key === Key.ENTER) {
         evt.preventDefault();
         window.form.activatePage();
       }
@@ -93,14 +95,14 @@
     return `${parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2)}, ${parseInt(mainPin.style.top, 10) + PIN_HEIGHT}`;
   };
 
-  document.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-    if (evt.key === Keys.ESCAPE) {
+  document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
+    if (evt.key === Key.ESCAPE) {
       evt.preventDefault();
       closeAdCard();
     }
   });
 
-  pinsListElement.addEventListener(window.util.Events.CLICK, openAdCard);
+  pinsListElement.addEventListener(window.util.Event.CLICK, openAdCard);
 
   window.map = {
     renderPinsList,

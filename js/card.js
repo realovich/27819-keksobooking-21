@@ -76,7 +76,7 @@
   const renderCard = (ad) => {
     let cardElement = cardTemplate.cloneNode(true);
 
-    const offerTypeName = {
+    const offerTypeToName = {
       bungalow: `Бунгало`,
       flat: `Квартира`,
       house: `Дом`,
@@ -86,7 +86,7 @@
     fillElement(cardElement, `.popup__title`, ad.offer.title);
     fillElement(cardElement, `.popup__text--address`, ad.offer.address);
     fillPrice(cardElement, `.popup__text--price`, ad.offer.price);
-    fillElement(cardElement, `.popup__type`, offerTypeName[ad.offer.type]);
+    fillElement(cardElement, `.popup__type`, offerTypeToName[ad.offer.type]);
     fillCapacity(cardElement, `.popup__text--capacity`, ad.offer.rooms, ad.offer.guests);
     fillTime(cardElement, `.popup__text--time`, ad.offer.checkin, ad.offer.checkout);
     fillFeatures(cardElement, `.popup__features`, ad.offer.features);
@@ -99,7 +99,7 @@
 
   const insertRenderedCard = (cardNumber) => {
     const fragment = document.createDocumentFragment();
-    const renderedCard = renderCard(window.data.renderedAdArray[cardNumber]);
+    const renderedCard = renderCard(window.form.getSavedAds()[cardNumber]);
 
     fragment.appendChild(renderedCard);
     window.map.setFragmentPlace(fragment);

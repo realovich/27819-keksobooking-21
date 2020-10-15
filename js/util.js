@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const Events = {
+  const Event = {
     CLICK: `click`,
     KEYDOWN: `keydown`,
     MOUSEDOWN: `mousedown`,
@@ -25,9 +25,18 @@
     return words[2];
   };
 
+  const renderErrorMessage = (errorMessage) => {
+    const node = document.createElement(`div`);
+    node.style = `position: absoluet; left: 0; right: 0; background-color: tomato; padding: 4px; text-align: center;`;
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
+
   window.util = {
     getRandomInteger,
     declinationOfNumber,
-    Events
+    renderErrorMessage,
+    Event
   };
 })();

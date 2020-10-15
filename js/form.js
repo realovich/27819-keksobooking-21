@@ -10,7 +10,7 @@
   const FIELD_TIMEIN_ID = `#timein`;
   const FIELD_TIMEOUT_ID = `#timeout`;
 
-  const FormAttributes = {
+  const ControlAtributte = {
     DISABLED: `disabled`,
     MIN: `min`,
     PLACEHOLDER: `placeholder`
@@ -38,13 +38,13 @@
 
   const disableControls = (controls) => {
     for (let i = 0; i < controls.length; i++) {
-      controls[i].setAttribute(FormAttributes.DISABLED, ``);
+      controls[i].setAttribute(ControlAtributte.DISABLED, ``);
     }
   };
 
   const enableControls = (controls) => {
     for (let i = 0; i < controls.length; i++) {
-      controls[i].removeAttribute(FormAttributes.DISABLED, ``);
+      controls[i].removeAttribute(ControlAtributte.DISABLED, ``);
     }
   };
 
@@ -83,25 +83,30 @@
   const synchronizeTypePriceFields = () => {
     const fieldTypeValue = fieldType.value;
 
-    const minPriceType = {
+    const typeToMinPrice = {
       bungalow: 0,
       flat: 1000,
       house: 5000,
       palace: 10000
     };
 
-    fieldPrice.setAttribute(FormAttributes.PLACEHOLDER, minPriceType[fieldTypeValue]);
-    fieldPrice.setAttribute(FormAttributes.MIN, minPriceType[fieldTypeValue]);
+    fieldPrice.setAttribute(ControlAtributte.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
+    fieldPrice.setAttribute(ControlAtributte.MIN, typeToMinPrice[fieldTypeValue]);
   };
+
+  let savedAds;
 
   const activatePage = () => {
     window.map.removeFadedClass();
     adForm.classList.remove(AD_FORM_DISABLED_CLASS);
     enableControls(filterControls);
     enableControls(adControls);
-    window.map.renderPinsList();
+    window.backend.load((data) => {
+      savedAds = data;
+      window.map.renderPinsList(savedAds);
+    }, window.util.renderErrorMessage);
     setCustomAddress();
-    adForm.addEventListener(window.util.Events.CHANGE, (evt) => window.form.addFormValidation(evt));
+    adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt));
   };
 
   const deactivatePage = () => {
@@ -114,6 +119,7 @@
   window.form = {
     addFormValidation,
     deactivatePage,
-    activatePage
+    activatePage,
+    getSavedAds: () => savedAds,
   };
 })();
