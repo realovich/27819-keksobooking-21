@@ -96,15 +96,17 @@
 
   let savedAds;
 
+  const successHandler = (data) => {
+    savedAds = data;
+    window.map.renderPinsList(savedAds);
+  };
+
   const activatePage = () => {
     window.map.removeFadedClass();
     adForm.classList.remove(AD_FORM_DISABLED_CLASS);
     enableControls(filterControls);
     enableControls(adControls);
-    window.backend.load((data) => {
-      savedAds = data;
-      window.map.renderPinsList(savedAds);
-    }, window.util.renderErrorMessage);
+    window.backend.load(successHandler, window.util.renderErrorMessage);
     setCustomAddress();
     adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt));
     window.map.removeListenersForActivatePage();
