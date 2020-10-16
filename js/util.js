@@ -9,8 +9,6 @@
     CHANGE: `change`
   };
 
-  const getRandomInteger = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
-
   const declinationOfNumber = (number, words) => {
     number = Math.abs(number) % 100;
 
@@ -34,7 +32,6 @@
   };
 
   window.util = {
-    getRandomInteger,
     declinationOfNumber,
     renderErrorMessage,
     Event

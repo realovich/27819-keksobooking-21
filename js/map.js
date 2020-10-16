@@ -3,6 +3,7 @@
 (() => {
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
+  const MAX_NUMBER_ADS = 5;
   const ACTIVE_PIN_CLASS = `map__pin--active`;
   const FADED_CLASS = `map--faded`;
 
@@ -32,7 +33,7 @@
   const renderPinsList = (ads) => {
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < ads.length; i++) {
+    for (let i = 0; i < MAX_NUMBER_ADS; i++) {
       if (ads[i].offer) {
         fragment.appendChild(renderPin(ads[i], i));
       }
@@ -68,19 +69,29 @@
     }
   };
 
-  const addListenersForActivatePage = () => {
-    mainPin.addEventListener(window.util.Event.MOUSEDOWN, (evt) => {
-      if (evt.button === 0) {
-        window.form.activatePage();
-      }
-    });
+  const onMainMouseBtn = (evt) => {
+    if (evt.button === 0) {
+      window.form.activatePage();
+    }
+  };
 
-    mainPin.addEventListener(window.util.Event.KEYDOWN, (evt) => {
-      if (evt.key === Key.ENTER) {
-        evt.preventDefault();
-        window.form.activatePage();
-      }
-    });
+  const onEnterKey = (evt) => {
+    if (evt.key === Key.ENTER) {
+      evt.preventDefault();
+      window.form.activatePage();
+    }
+  };
+
+  const addListenersForActivatePage = () => {
+    mainPin.addEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+
+    mainPin.addEventListener(window.util.Event.KEYDOWN, onEnterKey);
+  };
+
+  const removeListenersForActivatePage = () => {
+    mainPin.removeEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+
+    mainPin.removeEventListener(window.util.Event.KEYDOWN, onEnterKey);
   };
 
   const setFragmentPlace = (fragment) => {
@@ -110,6 +121,7 @@
     addFadedClass: () => mapElement.classList.add(FADED_CLASS),
     removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
     addListenersForActivatePage,
+    removeListenersForActivatePage,
     setFragmentPlace,
     width: mapElement.offsetWidth
   };

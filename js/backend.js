@@ -53,17 +53,7 @@
     });
   };
 
-  const save = (data, onLoad, onError) => {
-    executeRequest(Method.POST, {
-      url: RequestUrl.SAVE,
-      onLoad,
-      onError,
-      data
-    });
-  };
-
   window.backend = {
-    load,
-    save
+    load
   };
 })();

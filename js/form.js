@@ -107,6 +107,7 @@
     }, window.util.renderErrorMessage);
     setCustomAddress();
     adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt));
+    window.map.removeListenersForActivatePage();
   };
 
   const deactivatePage = () => {
