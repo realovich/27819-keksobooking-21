@@ -101,12 +101,16 @@
     window.map.renderPinsList(savedAds);
   };
 
+  const errorHandler = (errorMessage) => {
+    window.util.renderErrorMessage(errorMessage);
+  };
+
   const activatePage = () => {
     window.map.removeFadedClass();
     adForm.classList.remove(AD_FORM_DISABLED_CLASS);
     enableControls(filterControls);
     enableControls(adControls);
-    window.backend.load(successHandler, window.util.renderErrorMessage);
+    window.backend.load(successHandler, errorHandler);
     setCustomAddress();
     adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt));
     window.map.removeListenersForActivatePage();

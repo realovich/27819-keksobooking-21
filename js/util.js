@@ -23,11 +23,11 @@
     return words[2];
   };
 
-  const renderErrorMessage = (errorMessage) => {
+  const renderErrorMessage = (message) => {
     const node = document.createElement(`div`);
     node.style = `position: absoluet; left: 0; right: 0; background-color: tomato; padding: 4px; text-align: center;`;
 
-    node.textContent = errorMessage;
+    node.textContent = message;
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
