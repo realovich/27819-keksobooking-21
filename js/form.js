@@ -97,7 +97,7 @@
   let savedAds;
 
   const successHandler = (data) => {
-    savedAds = data.filter((element) => !element.offer);
+    savedAds = data.filter((element) => element.offer);
     window.map.renderPinsList(savedAds);
   };
 
