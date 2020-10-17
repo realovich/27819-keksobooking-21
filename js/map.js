@@ -31,9 +31,10 @@
   };
 
   const renderPinsList = (ads) => {
+    const getQuantity = ads.length > MAX_NUMBER_ADS ? MAX_NUMBER_ADS : ads.length;
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < MAX_NUMBER_ADS; i++) {
+    for (let i = 0; i < getQuantity; i++) {
       if (ads[i].offer) {
         fragment.appendChild(renderPin(ads[i], i));
       }
