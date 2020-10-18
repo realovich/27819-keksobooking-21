@@ -1,15 +1,13 @@
 'use strict';
 
 (() => {
-  const Events = {
+  const Event = {
     CLICK: `click`,
     KEYDOWN: `keydown`,
     MOUSEDOWN: `mousedown`,
     MOUSEUP: `mouseup`,
     CHANGE: `change`
   };
-
-  const getRandomInteger = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
 
   const declinationOfNumber = (number, words) => {
     number = Math.abs(number) % 100;
@@ -25,9 +23,17 @@
     return words[2];
   };
 
+  const renderErrorMessage = (message) => {
+    const node = document.createElement(`div`);
+    node.style = `position: absoluet; left: 0; right: 0; background-color: tomato; padding: 4px; text-align: center;`;
+
+    node.textContent = message;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
+
   window.util = {
-    getRandomInteger,
     declinationOfNumber,
-    Events
+    renderErrorMessage,
+    Event
   };
 })();

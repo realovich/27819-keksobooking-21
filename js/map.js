@@ -3,10 +3,11 @@
 (() => {
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
+  const MAX_NUMBER_ADS = 5;
   const ACTIVE_PIN_CLASS = `map__pin--active`;
   const FADED_CLASS = `map--faded`;
 
-  const Keys = {
+  const Key = {
     ESCAPE: `Escape`,
     ENTER: `Enter`
   };
@@ -29,11 +30,12 @@
     return pinElement;
   };
 
-  const renderPinsList = () => {
+  const renderPinsList = (ads) => {
+    const quantity = ads.length > MAX_NUMBER_ADS ? MAX_NUMBER_ADS : ads.length;
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < window.data.renderedAdArray.length; i++) {
-      fragment.appendChild(renderPin(window.data.renderedAdArray[i], i));
+    for (let i = 0; i < quantity; i++) {
+      fragment.appendChild(renderPin(ads[i], i));
     }
 
     pinsListElement.appendChild(fragment);
@@ -62,23 +64,33 @@
       targetParent.classList.add(ACTIVE_PIN_CLASS);
 
       const adCardClose = renderedAdCard.querySelector(`.popup__close`);
-      adCardClose.addEventListener(window.util.Events.CLICK, closeAdCard);
+      adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
+    }
+  };
+
+  const onMainMouseBtn = (evt) => {
+    if (evt.button === 0) {
+      window.form.activatePage();
+    }
+  };
+
+  const onEnterKey = (evt) => {
+    if (evt.key === Key.ENTER) {
+      evt.preventDefault();
+      window.form.activatePage();
     }
   };
 
   const addListenersForActivatePage = () => {
-    mainPin.addEventListener(window.util.Events.MOUSEDOWN, (evt) => {
-      if (evt.button === 0) {
-        window.form.activatePage();
-      }
-    });
+    mainPin.addEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
 
-    mainPin.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-      if (evt.key === Keys.ENTER) {
-        evt.preventDefault();
-        window.form.activatePage();
-      }
-    });
+    mainPin.addEventListener(window.util.Event.KEYDOWN, onEnterKey);
+  };
+
+  const removeListenersForActivatePage = () => {
+    mainPin.removeEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+
+    mainPin.removeEventListener(window.util.Event.KEYDOWN, onEnterKey);
   };
 
   const setFragmentPlace = (fragment) => {
@@ -93,14 +105,14 @@
     return `${parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2)}, ${parseInt(mainPin.style.top, 10) + PIN_HEIGHT}`;
   };
 
-  document.addEventListener(window.util.Events.KEYDOWN, (evt) => {
-    if (evt.key === Keys.ESCAPE) {
+  document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
+    if (evt.key === Key.ESCAPE) {
       evt.preventDefault();
       closeAdCard();
     }
   });
 
-  pinsListElement.addEventListener(window.util.Events.CLICK, openAdCard);
+  pinsListElement.addEventListener(window.util.Event.CLICK, openAdCard);
 
   window.map = {
     renderPinsList,
@@ -108,6 +120,7 @@
     addFadedClass: () => mapElement.classList.add(FADED_CLASS),
     removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
     addListenersForActivatePage,
+    removeListenersForActivatePage,
     setFragmentPlace,
     width: mapElement.offsetWidth
   };
