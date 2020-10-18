@@ -4,7 +4,6 @@
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
   const MAX_NUMBER_ADS = 5;
-  const ACTIVE_PIN_CLASS = `map__pin--active`;
   const FADED_CLASS = `map--faded`;
 
   const Key = {
@@ -49,33 +48,6 @@
     pinsListElement.appendChild(fragment);
   };
 
-  const closeAdCard = () => {
-    const activePin = mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`);
-
-    if (activePin) {
-      const adCard = mapElement.querySelector(`.map__card`);
-
-      activePin.classList.remove(ACTIVE_PIN_CLASS);
-      adCard.remove();
-    }
-  };
-
-  const openAdCard = (evt) => {
-    const {target} = evt;
-    const targetParent = target.closest(`[type="button"]`);
-
-    if (target && targetParent) {
-      closeAdCard();
-
-      const renderedAdCard = window.card.insertRenderedCard(Number(targetParent.dataset.pinId));
-
-      targetParent.classList.add(ACTIVE_PIN_CLASS);
-
-      const adCardClose = renderedAdCard.querySelector(`.popup__close`);
-      adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
-    }
-  };
-
   const onMainMouseBtn = (evt) => {
     if (evt.button === 0) {
       window.form.activatePage();
@@ -116,11 +88,11 @@
   document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
     if (evt.key === Key.ESCAPE) {
       evt.preventDefault();
-      closeAdCard();
+      window.card.closeAdCard();
     }
   });
 
-  pinsListElement.addEventListener(window.util.Event.CLICK, openAdCard);
+  pinsListElement.addEventListener(window.util.Event.CLICK, window.card.openAdCard);
 
   window.map = {
     renderPinsList,
@@ -130,7 +102,7 @@
     addListenersForActivatePage,
     removeListenersForActivatePage,
     setFragmentPlace,
-    closeAdCard,
-    width: mapElement.offsetWidth
+    width: mapElement.offsetWidth,
+    element: mapElement
   };
 })();

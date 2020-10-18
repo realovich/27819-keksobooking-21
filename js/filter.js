@@ -9,7 +9,7 @@
     const {target} = evt;
     const targetValue = target.value;
 
-    window.map.closeAdCard();
+    window.card.closeAdCard();
 
     if (target && target.matches(FIELD_HOUSING_TYPE_ID)) {
       const typeFiltredAds = window.form.getSavedAds().filter((element) => {
