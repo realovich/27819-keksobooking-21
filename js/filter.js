@@ -19,9 +19,9 @@
 
         return true;
       });
-      window.form.saveFiltredAds(typeFiltredAds);
 
-      window.map.renderPinsList(window.form.getFiltredAds());
+      window.form.saveFiltredAds(typeFiltredAds);
+      window.map.renderPinsList(typeFiltredAds);
     }
   });
 
