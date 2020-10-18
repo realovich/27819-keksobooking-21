@@ -12,13 +12,16 @@
     window.map.closeAdCard();
 
     if (target && target.matches(FIELD_HOUSING_TYPE_ID)) {
-      if (targetValue !== `any`) {
-        const typeFiltredAds = window.form.getSavedAds().filter((element) => element.offer.type === targetValue);
-        window.form.saveFiltredAds(typeFiltredAds);
-        window.map.renderPinsList(window.form.getFiltredAds());
-      } else {
-        window.map.renderPinsList(window.form.getSavedAds());
-      }
+      const typeFiltredAds = window.form.getSavedAds().filter((element) => {
+        if (targetValue !== `any`) {
+          return element.offer.type === targetValue;
+        }
+
+        return true;
+      });
+      window.form.saveFiltredAds(typeFiltredAds);
+
+      window.map.renderPinsList(window.form.getFiltredAds());
     }
   });
 
