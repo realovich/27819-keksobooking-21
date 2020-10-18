@@ -99,7 +99,7 @@
 
   const insertRenderedCard = (cardNumber) => {
     const fragment = document.createDocumentFragment();
-    const renderedCard = renderCard(window.form.getSavedAds()[cardNumber]);
+    const renderedCard = renderCard(window.form.getFiltredAds()[cardNumber]);
 
     fragment.appendChild(renderedCard);
     window.map.setFragmentPlace(fragment);

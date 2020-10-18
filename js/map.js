@@ -34,6 +34,14 @@
     const quantity = ads.length > MAX_NUMBER_ADS ? MAX_NUMBER_ADS : ads.length;
     const fragment = document.createDocumentFragment();
 
+    const existingPins = pinsListElement.querySelectorAll(`[type="button"]`);
+
+    if (existingPins) {
+      for (let existingPin of existingPins) {
+        existingPin.remove();
+      }
+    }
+
     for (let i = 0; i < quantity; i++) {
       fragment.appendChild(renderPin(ads[i], i));
     }
@@ -122,6 +130,7 @@
     addListenersForActivatePage,
     removeListenersForActivatePage,
     setFragmentPlace,
+    closeAdCard,
     width: mapElement.offsetWidth
   };
 })();

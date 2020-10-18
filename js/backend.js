@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const REQUEST_TIMEOUT = 1000;
+  const REQUEST_TIMEOUT = 2000;
 
   const RequestUrl = {
     LOAD: `https://21.javascript.pages.academy/keksobooking/data`

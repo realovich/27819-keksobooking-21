@@ -16,9 +16,7 @@
     PLACEHOLDER: `placeholder`
   };
 
-  const filterForm = document.querySelector(`.map__filters`);
   const adForm = document.querySelector(`.ad-form`);
-  const filterControls = filterForm.children;
   const adControls = adForm.children;
   const fieldAddress = adForm.querySelector(FIELD_ADDRESS_ID);
   const fieldRoomNumber = adForm.querySelector(FIELD_ROOM_NUMBER_ID);
@@ -99,6 +97,13 @@
   const successHandler = (data) => {
     savedAds = data.filter((element) => element.offer);
     window.map.renderPinsList(savedAds);
+    saveFiltredAds(savedAds);
+  };
+
+  let filtredAds;
+
+  const saveFiltredAds = (data) => {
+    filtredAds = data;
   };
 
   const errorHandler = (errorMessage) => {
@@ -108,7 +113,7 @@
   const activatePage = () => {
     window.map.removeFadedClass();
     adForm.classList.remove(AD_FORM_DISABLED_CLASS);
-    enableControls(filterControls);
+    enableControls(window.filter.formChildren);
     enableControls(adControls);
     window.backend.load(successHandler, errorHandler);
     setCustomAddress();
@@ -118,7 +123,7 @@
 
   const deactivatePage = () => {
     window.map.addFadedClass();
-    disableControls(filterControls);
+    disableControls(window.filter.formChildren);
     disableControls(adControls);
     setDefaultAddress();
   };
@@ -128,5 +133,7 @@
     deactivatePage,
     activatePage,
     getSavedAds: () => savedAds,
+    getFiltredAds: () => filtredAds,
+    saveFiltredAds,
   };
 })();
