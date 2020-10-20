@@ -99,7 +99,7 @@
 
   const insertRenderedCard = (cardNumber) => {
     const fragment = document.createDocumentFragment();
-    const renderedCard = renderCard(window.form.getSavedAds()[cardNumber]);
+    const renderedCard = renderCard(window.page.getFiltredAds()[cardNumber]);
 
     fragment.appendChild(renderedCard);
     window.map.setFragmentPlace(fragment);
@@ -107,7 +107,35 @@
     return renderedCard;
   };
 
+  const openAdCard = (evt) => {
+    const {target} = evt;
+    const targetParent = target.closest(`[type="button"]`);
+
+    if (target && targetParent) {
+      closeAdCard();
+
+      const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
+
+      window.map.toggleActivePinClass(targetParent);
+
+      const adCardClose = renderedAdCard.querySelector(`.popup__close`);
+      adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
+    }
+  };
+
+  const closeAdCard = () => {
+    const activePin = window.map.getActivePin();
+
+    if (activePin) {
+      const adCard = window.map.getActiveCard();
+
+      window.map.toggleActivePinClass(activePin);
+      adCard.remove();
+    }
+  };
+
   window.card = {
-    insertRenderedCard
+    openAdCard,
+    closeAdCard
   };
 })();
