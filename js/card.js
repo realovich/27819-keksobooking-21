@@ -1,8 +1,6 @@
 'use strict';
 
 (() => {
-  const ACTIVE_PIN_CLASS = `map__pin--active`;
-
   const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
   const showConditions = (data) => (data === null || data === undefined || data === ``);
 
@@ -101,7 +99,7 @@
 
   const insertRenderedCard = (cardNumber) => {
     const fragment = document.createDocumentFragment();
-    const renderedCard = renderCard(window.form.getFiltredAds()[cardNumber]);
+    const renderedCard = renderCard(window.page.getFiltredAds()[cardNumber]);
 
     fragment.appendChild(renderedCard);
     window.map.setFragmentPlace(fragment);
@@ -118,7 +116,7 @@
 
       const renderedAdCard = insertRenderedCard(Number(targetParent.dataset.pinId));
 
-      targetParent.classList.add(ACTIVE_PIN_CLASS);
+      window.map.toggleActivePinClass(targetParent);
 
       const adCardClose = renderedAdCard.querySelector(`.popup__close`);
       adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
@@ -126,12 +124,12 @@
   };
 
   const closeAdCard = () => {
-    const activePin = window.map.element.querySelector(`.${ACTIVE_PIN_CLASS}`);
+    const activePin = window.map.getActivePin();
 
     if (activePin) {
-      const adCard = window.map.element.querySelector(`.map__card`);
+      const adCard = window.map.getActiveCard();
 
-      activePin.classList.remove(ACTIVE_PIN_CLASS);
+      window.map.toggleActivePinClass(activePin);
       adCard.remove();
     }
   };

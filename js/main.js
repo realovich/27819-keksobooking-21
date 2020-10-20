@@ -2,7 +2,7 @@
 
 (() => {
 
-  window.form.deactivatePage();
+  window.page.deactivatePage();
 
   window.map.addListenersForActivatePage();
 

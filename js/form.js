@@ -1,7 +1,6 @@
 'use strict';
 
 (() => {
-  const AD_FORM_DISABLED_CLASS = `ad-form--disabled`;
   const FIELD_ADDRESS_ID = `#address`;
   const FIELD_ROOM_NUMBER_ID = `#room_number`;
   const FIELD_CAPACITY_ID = `#capacity`;
@@ -9,6 +8,7 @@
   const FIELD_PRICE_ID = `#price`;
   const FIELD_TIMEIN_ID = `#timein`;
   const FIELD_TIMEOUT_ID = `#timeout`;
+  const AD_FORM_DISABLED_CLASS = `ad-form--disabled`;
 
   const ControlAtributte = {
     DISABLED: `disabled`,
@@ -17,7 +17,6 @@
   };
 
   const adForm = document.querySelector(`.ad-form`);
-  const adControls = adForm.children;
   const fieldAddress = adForm.querySelector(FIELD_ADDRESS_ID);
   const fieldRoomNumber = adForm.querySelector(FIELD_ROOM_NUMBER_ID);
   const fieldCapacity = adForm.querySelector(FIELD_CAPACITY_ID);
@@ -92,48 +91,14 @@
     fieldPrice.setAttribute(ControlAtributte.MIN, typeToMinPrice[fieldTypeValue]);
   };
 
-  let savedAds;
-
-  const successHandler = (data) => {
-    savedAds = data.filter((element) => element.offer);
-    window.map.renderPinsList(savedAds);
-    saveFiltredAds(savedAds);
-  };
-
-  let filtredAds;
-
-  const saveFiltredAds = (data) => {
-    filtredAds = data;
-  };
-
-  const errorHandler = (errorMessage) => {
-    window.util.renderErrorMessage(errorMessage);
-  };
-
-  const activatePage = () => {
-    window.map.removeFadedClass();
-    adForm.classList.remove(AD_FORM_DISABLED_CLASS);
-    enableControls(window.filter.formChildren);
-    enableControls(adControls);
-    window.backend.load(successHandler, errorHandler);
-    setCustomAddress();
-    adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt));
-    window.map.removeListenersForActivatePage();
-  };
-
-  const deactivatePage = () => {
-    window.map.addFadedClass();
-    disableControls(window.filter.formChildren);
-    disableControls(adControls);
-    setDefaultAddress();
-  };
-
   window.form = {
     addFormValidation,
-    deactivatePage,
-    activatePage,
-    getSavedAds: () => savedAds,
-    getFiltredAds: () => filtredAds,
-    saveFiltredAds,
+    enableControls,
+    disableControls,
+    setDefaultAddress,
+    setCustomAddress,
+    getFormChildren: () => adForm.children,
+    addChangeListener: () => adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt)),
+    toggleDisabledClass: () => adForm.classList.remove(AD_FORM_DISABLED_CLASS),
   };
 })();

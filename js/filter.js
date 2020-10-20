@@ -7,25 +7,19 @@
 
   filterForm.addEventListener(window.util.Event.CHANGE, (evt) => {
     const {target} = evt;
-    const targetValue = target.value;
+    const {value} = target;
 
     window.card.closeAdCard();
 
     if (target && target.matches(FIELD_HOUSING_TYPE_ID)) {
-      const typeFiltredAds = window.form.getSavedAds().filter((element) => {
-        if (targetValue !== `any`) {
-          return element.offer.type === targetValue;
-        }
+      const typeFiltredAds = window.page.getSavedAds().filter((element) => value === `any` || element.offer.type === value);
 
-        return true;
-      });
-
-      window.form.saveFiltredAds(typeFiltredAds);
+      window.page.saveFiltredAds(typeFiltredAds);
       window.map.renderPinsList(typeFiltredAds);
     }
   });
 
   window.filter = {
-    formChildren: filterForm.children,
+    getFormChildren: () => filterForm.children
   };
 })();

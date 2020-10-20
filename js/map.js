@@ -5,6 +5,7 @@
   const PIN_HEIGHT = 70;
   const MAX_NUMBER_ADS = 5;
   const FADED_CLASS = `map--faded`;
+  const ACTIVE_PIN_CLASS = `map__pin--active`;
 
   const Key = {
     ESCAPE: `Escape`,
@@ -30,9 +31,6 @@
   };
 
   const renderPinsList = (ads) => {
-    const quantity = ads.length > MAX_NUMBER_ADS ? MAX_NUMBER_ADS : ads.length;
-    const fragment = document.createDocumentFragment();
-
     const existingPins = pinsListElement.querySelectorAll(`[type="button"]`);
 
     if (existingPins) {
@@ -40,6 +38,9 @@
         existingPin.remove();
       }
     }
+
+    const quantity = Math.min(ads.length, MAX_NUMBER_ADS);
+    const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < quantity; i++) {
       fragment.appendChild(renderPin(ads[i], i));
@@ -50,14 +51,14 @@
 
   const onMainMouseBtn = (evt) => {
     if (evt.button === 0) {
-      window.form.activatePage();
+      window.page.activatePage();
     }
   };
 
   const onEnterKey = (evt) => {
     if (evt.key === Key.ENTER) {
       evt.preventDefault();
-      window.form.activatePage();
+      window.page.activatePage();
     }
   };
 
@@ -99,10 +100,11 @@
     getPinCoordinates,
     addFadedClass: () => mapElement.classList.add(FADED_CLASS),
     removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
+    getActiveCard: () => mapElement.querySelector(`.map__card`),
+    getActivePin: () => mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`),
+    toggleActivePinClass: (element) => element.classList.toggle(ACTIVE_PIN_CLASS),
     addListenersForActivatePage,
     removeListenersForActivatePage,
-    setFragmentPlace,
-    width: mapElement.offsetWidth,
-    element: mapElement
+    setFragmentPlace
   };
 })();
