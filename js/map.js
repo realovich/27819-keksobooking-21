@@ -78,15 +78,18 @@
         y: moveEvt.clientY
       };
 
-      const positionX = mainPin.offsetLeft - shift.x;
-      const positionY = mainPin.offsetTop - shift.y;
+      const newPositionX = mainPin.offsetLeft - shift.x;
+      const newPositionY = mainPin.offsetTop - shift.y;
 
-      if ((positionX + (mainPinWidth / 2)) >= 0 && (positionX + (mainPinWidth / 2)) <= mapElement.offsetWidth && (positionY + mainPinHeight) >= MapLimit.TOP && positionY <= MapLimit.BOTTOM) {
-        mainPin.style.left = `${positionX}px`;
-        mainPin.style.top = `${positionY}px`;
+      const minLeftPosition = 0 - (mainPinWidth / 2);
+      const maxLeftPosition = mapElement.offsetWidth - (mainPinWidth / 2);
+      const minTopPosition = MapLimit.TOP - mainPinHeight;
+      const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
 
-        window.form.setCustomAddress();
-      }
+      mainPin.style.left = `${Math.max(Math.min(newPositionX, maxLeftPosition), minLeftPosition)}px`;
+      mainPin.style.top = `${Math.max(Math.min(newPositionY, maxTopPosition), minTopPosition)}px`;
+
+      window.form.setCustomAddress();
     };
 
     const onMouseUp = (upEvt) => {
@@ -139,11 +142,9 @@
   };
 
   const getPinCoordinates = (isDefault) => {
-    if (isDefault) {
-      return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + Math.round(mainPinHeight / 2)}`;
-    }
+    const offsetY = isDefault ? Math.round(mainPinHeight / 2) : mainPinHeight;
 
-    return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + mainPinHeight}`;
+    return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + offsetY}`;
   };
 
   document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
