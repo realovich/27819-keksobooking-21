@@ -24,6 +24,7 @@
     window.backend.load(successHandler, errorHandler);
     window.map.removeFadedClass();
     window.form.toggleDisabledClass();
+    window.form.enableControls(window.form.getFormChildren());
     window.form.setCustomAddress();
     window.form.addChangeListener();
   };
