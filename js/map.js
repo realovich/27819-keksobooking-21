@@ -7,6 +7,11 @@
   const FADED_CLASS = `map--faded`;
   const ACTIVE_PIN_CLASS = `map__pin--active`;
 
+  const MapLimit = {
+    TOP: 130,
+    BOTTOM: 630,
+  };
+
   const Key = {
     ESCAPE: `Escape`,
     ENTER: `Enter`
@@ -14,6 +19,9 @@
 
   const mapElement = document.querySelector(`.map`);
   const mainPin = mapElement.querySelector(`.map__pin--main`);
+
+  const mainPinWidth = mainPin.offsetWidth;
+  const mainPinHeight = mainPin.offsetHeight;
 
   const pinsListElement = mapElement.querySelector(`.map__pins`);
   const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
@@ -49,16 +57,68 @@
     pinsListElement.appendChild(fragment);
   };
 
+  let isPageActive;
+
+  const movePin = (evt) => {
+    let startСoordinates = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    const onMouseMove = (moveEvt) => {
+      moveEvt.preventDefault();
+
+      const shift = {
+        x: startСoordinates.x - moveEvt.clientX,
+        y: startСoordinates.y - moveEvt.clientY
+      };
+
+      startСoordinates = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      const positionX = mainPin.offsetLeft - shift.x;
+      const positionY = mainPin.offsetTop - shift.y;
+
+      if ((positionX + (mainPinWidth / 2)) >= 0 && (positionX + (mainPinWidth / 2)) <= mapElement.offsetWidth && (positionY + mainPinHeight) >= MapLimit.TOP && positionY <= MapLimit.BOTTOM) {
+        mainPin.style.left = `${positionX}px`;
+        mainPin.style.top = `${positionY}px`;
+
+        window.form.setCustomAddress();
+      }
+    };
+
+    const onMouseUp = (upEvt) => {
+      upEvt.preventDefault();
+
+      document.removeEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
+      document.removeEventListener(window.util.Event.MOUSEUP, onMouseUp);
+    };
+
+    document.addEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
+    document.addEventListener(window.util.Event.MOUSEUP, onMouseUp);
+  };
+
   const onMainMouseBtn = (evt) => {
     if (evt.button === 0) {
-      window.page.activatePage();
+      evt.preventDefault();
+
+      if (!isPageActive) {
+        window.page.activatePage();
+        isPageActive = true;
+      }
+
+      movePin(evt);
     }
   };
 
   const onEnterKey = (evt) => {
-    if (evt.key === Key.ENTER) {
+    if (evt.key === Key.ENTER && !isPageActive) {
       evt.preventDefault();
       window.page.activatePage();
+
+      isPageActive = true;
     }
   };
 
@@ -80,10 +140,10 @@
 
   const getPinCoordinates = (isDefault) => {
     if (isDefault) {
-      return `${parseInt(mainPin.style.left, 10) + Math.round(mainPin.offsetWidth / 2)}, ${parseInt(mainPin.style.top, 10) + Math.round(mainPin.offsetHeight / 2)}`;
+      return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + Math.round(mainPinHeight / 2)}`;
     }
 
-    return `${parseInt(mainPin.style.left, 10) + Math.round(PIN_WIDTH / 2)}, ${parseInt(mainPin.style.top, 10) + PIN_HEIGHT}`;
+    return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + mainPinHeight}`;
   };
 
   document.addEventListener(window.util.Event.KEYDOWN, (evt) => {

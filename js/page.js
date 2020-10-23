@@ -23,7 +23,6 @@
   const activatePage = () => {
     window.backend.load(successHandler, errorHandler);
     window.map.removeFadedClass();
-    window.map.removeListenersForActivatePage();
     window.form.toggleDisabledClass();
     window.form.enableControls(window.form.getFormChildren);
     window.form.setCustomAddress();
