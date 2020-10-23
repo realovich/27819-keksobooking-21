@@ -7,7 +7,7 @@
     savedAds = data.filter((element) => element.offer);
     window.map.renderPinsList(savedAds);
     saveFiltredAds(savedAds);
-    window.form.enableControls(window.filter.getFormChildren);
+    window.form.enableControls(window.filter.getFormChildren());
   };
 
   let filtredAds;
@@ -24,15 +24,14 @@
     window.backend.load(successHandler, errorHandler);
     window.map.removeFadedClass();
     window.form.toggleDisabledClass();
-    window.form.enableControls(window.form.getFormChildren);
     window.form.setCustomAddress();
     window.form.addChangeListener();
   };
 
   const deactivatePage = () => {
     window.map.addFadedClass();
-    window.form.disableControls(window.filter.getFormChildren);
-    window.form.disableControls(window.form.getFormChildren);
+    window.form.disableControls(window.filter.getFormChildren());
+    window.form.disableControls(window.form.getFormChildren());
     window.form.setDefaultAddress();
   };
 
