@@ -57,8 +57,6 @@
     pinsListElement.appendChild(fragment);
   };
 
-  let isPageActive;
-
   const movePin = (evt) => {
     let startСoordinates = {
       x: evt.clientX,
@@ -102,6 +100,8 @@
     document.addEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
     document.addEventListener(window.util.Event.MOUSEUP, onMouseUp);
   };
+
+  let isPageActive;
 
   const onMainMouseBtn = (evt) => {
     if (evt.button === 0) {
