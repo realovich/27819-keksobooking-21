@@ -23,6 +23,11 @@
   const mainPinWidth = mainPin.offsetWidth;
   const mainPinHeight = mainPin.offsetHeight;
 
+  const minLeftPosition = 0 - (mainPinWidth / 2);
+  const maxLeftPosition = mapElement.offsetWidth - (mainPinWidth / 2);
+  const minTopPosition = MapLimit.TOP - mainPinHeight;
+  const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
+
   const pinsListElement = mapElement.querySelector(`.map__pins`);
   const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
@@ -78,11 +83,6 @@
 
       const newPositionX = mainPin.offsetLeft - shift.x;
       const newPositionY = mainPin.offsetTop - shift.y;
-
-      const minLeftPosition = 0 - (mainPinWidth / 2);
-      const maxLeftPosition = mapElement.offsetWidth - (mainPinWidth / 2);
-      const minTopPosition = MapLimit.TOP - mainPinHeight;
-      const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
 
       mainPin.style.left = `${Math.max(Math.min(newPositionX, maxLeftPosition), minLeftPosition)}px`;
       mainPin.style.top = `${Math.max(Math.min(newPositionY, maxTopPosition), minTopPosition)}px`;
