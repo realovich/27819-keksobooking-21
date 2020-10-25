@@ -5,6 +5,7 @@
     CLICK: `click`,
     KEYDOWN: `keydown`,
     MOUSEDOWN: `mousedown`,
+    MOUSEMOVE: `mousemove`,
     MOUSEUP: `mouseup`,
     CHANGE: `change`
   };
