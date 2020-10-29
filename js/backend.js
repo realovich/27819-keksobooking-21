@@ -1,10 +1,11 @@
 'use strict';
 
 (() => {
-  const REQUEST_TIMEOUT = 1000;
+  const REQUEST_TIMEOUT = 2000;
 
   const RequestUrl = {
-    LOAD: `https://21.javascript.pages.academy/keksobooking/data`
+    LOAD: `https://21.javascript.pages.academy/keksobooking/data`,
+    SAVE: `https://21.javascript.pages.academy/keksobooking`
   };
 
   const StatusCode = {
@@ -53,7 +54,17 @@
     });
   };
 
+  const save = (data, onLoad, onError) => {
+    executeRequest(Method.POST, {
+      url: RequestUrl.SAVE,
+      onLoad,
+      onError,
+      data
+    });
+  };
+
   window.backend = {
-    load
+    load,
+    save
   };
 })();

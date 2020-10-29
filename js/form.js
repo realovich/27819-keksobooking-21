@@ -17,6 +17,7 @@
   };
 
   const adForm = document.querySelector(`.ad-form`);
+  const resetButton = adForm.querySelector(`.ad-form__reset`);
   const fieldAddress = adForm.querySelector(FIELD_ADDRESS_ID);
   const fieldRoomNumber = adForm.querySelector(FIELD_ROOM_NUMBER_ID);
   const fieldCapacity = adForm.querySelector(FIELD_CAPACITY_ID);
@@ -91,6 +92,37 @@
     fieldPrice.setAttribute(ControlAtributte.MIN, typeToMinPrice[fieldTypeValue]);
   };
 
+  const successHandler = () => {
+    window.page.resetPage();
+    window.util.showMessage(`success`);
+  };
+
+  const errorHandler = () => {
+    window.util.showMessage(`error`);
+  };
+
+  adForm.addEventListener(window.util.Event.SUBMIT, (evt) => {
+    const formData = new FormData(adForm);
+
+    evt.preventDefault();
+    window.backend.save(formData, successHandler, errorHandler);
+  });
+
+  resetButton.addEventListener(window.util.Event.CLICK, (evt) => {
+    evt.preventDefault();
+    window.page.resetPage();
+  });
+
+  const addDisabledClass = () => adForm.classList.add(AD_FORM_DISABLED_CLASS);
+  const removeDisabledClass = () => adForm.classList.remove(AD_FORM_DISABLED_CLASS);
+
+  const resetForm = () => {
+    adForm.reset();
+    synchronizeTypePriceFields();
+    setCustomAddress();
+    addDisabledClass();
+  };
+
   window.form = {
     addFormValidation,
     enableControls,
@@ -99,6 +131,7 @@
     setCustomAddress,
     getFormChildren: () => adForm.children,
     addChangeListener: () => adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt)),
-    toggleDisabledClass: () => adForm.classList.remove(AD_FORM_DISABLED_CLASS),
+    removeDisabledClass,
+    resetForm
   };
 })();

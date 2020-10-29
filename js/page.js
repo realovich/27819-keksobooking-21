@@ -23,7 +23,7 @@
   const activatePage = () => {
     window.backend.load(successHandler, errorHandler);
     window.map.removeFadedClass();
-    window.form.toggleDisabledClass();
+    window.form.removeDisabledClass();
     window.form.enableControls(window.form.getFormChildren());
     window.form.setCustomAddress();
     window.form.addChangeListener();
@@ -36,9 +36,19 @@
     window.form.setDefaultAddress();
   };
 
+  const resetPage = () => {
+    window.card.closeAdCard();
+    window.map.removePins();
+    window.map.resetPinPosition();
+    window.filter.resetForm();
+    window.form.resetForm();
+    deactivatePage();
+  };
+
   window.page = {
     deactivatePage,
     activatePage,
+    resetPage,
     saveFiltredAds,
     getSavedAds: () => savedAds,
     getFiltredAds: () => filtredAds,
