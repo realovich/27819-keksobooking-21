@@ -39,9 +39,9 @@
   const resetPage = () => {
     window.card.closeAdCard();
     window.map.removePins();
+    window.map.resetPinPosition();
     window.filter.resetForm();
     window.form.resetForm();
-    window.form.addDisabledClass();
     deactivatePage();
   };
 

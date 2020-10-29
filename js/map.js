@@ -16,8 +16,8 @@
 
   const mapElement = document.querySelector(`.map`);
   const mainPin = mapElement.querySelector(`.${MAIN_PIN_CLASS}`);
-  const mainPinPositionLeft = mainPin.offsetLeft;
-  const mainPinPositionTop = mainPin.offsetTop;
+  const mainPinDefaultPositionLeft = mainPin.offsetLeft;
+  const mainPinDefaultPositionTop = mainPin.offsetTop;
 
   const mainPinWidth = mainPin.offsetWidth;
   const mainPinHeight = mainPin.offsetHeight;
@@ -125,8 +125,8 @@
   };
 
   const resetPinPosition = () => {
-    mainPin.style.left = `${mainPinPositionLeft}px`;
-    mainPin.style.top = `${mainPinPositionTop}px`;
+    mainPin.style.left = `${mainPinDefaultPositionLeft}px`;
+    mainPin.style.top = `${mainPinDefaultPositionTop}px`;
     isPageActive = false;
   };
 
@@ -155,10 +155,8 @@
   const removePins = () => {
     const pins = mapElement.querySelectorAll(`.${PIN_CLASS}`);
 
-    for (const pin of pins) {
-      if (!pin.classList.contains(MAIN_PIN_CLASS)) {
-        pin.remove();
-      }
+    for (let i = 1; i < pins.length; i++) {
+      pins[i].remove();
     }
   };
 

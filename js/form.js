@@ -118,9 +118,9 @@
 
   const resetForm = () => {
     adForm.reset();
-    window.map.resetPinPosition();
     synchronizeTypePriceFields();
     setCustomAddress();
+    addDisabledClass();
   };
 
   window.form = {
@@ -131,7 +131,6 @@
     setCustomAddress,
     getFormChildren: () => adForm.children,
     addChangeListener: () => adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt)),
-    addDisabledClass,
     removeDisabledClass,
     resetForm
   };
