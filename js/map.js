@@ -5,20 +5,19 @@
   const PIN_HEIGHT = 70;
   const MAX_NUMBER_ADS = 5;
   const FADED_CLASS = `map--faded`;
+  const PIN_CLASS = `map__pin`;
   const ACTIVE_PIN_CLASS = `map__pin--active`;
+  const MAIN_PIN_CLASS = `map__pin--main`;
 
   const MapLimit = {
     TOP: 130,
     BOTTOM: 630,
   };
 
-  const Key = {
-    ESCAPE: `Escape`,
-    ENTER: `Enter`
-  };
-
   const mapElement = document.querySelector(`.map`);
-  const mainPin = mapElement.querySelector(`.map__pin--main`);
+  const mainPin = mapElement.querySelector(`.${MAIN_PIN_CLASS}`);
+  const mainPinPositionLeft = mainPin.offsetLeft;
+  const mainPinPositionTop = mainPin.offsetTop;
 
   const mainPinWidth = mainPin.offsetWidth;
   const mainPinHeight = mainPin.offsetHeight;
@@ -29,7 +28,7 @@
   const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
 
   const pinsListElement = mapElement.querySelector(`.map__pins`);
-  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.${PIN_CLASS}`);
 
   const renderPin = (ad, index) => {
     const pinElement = pinTemplate.cloneNode(true);
@@ -117,12 +116,18 @@
   };
 
   const onEnterKey = (evt) => {
-    if (evt.key === Key.ENTER && !isPageActive) {
+    if (evt.key === window.util.Key.ENTER && !isPageActive) {
       evt.preventDefault();
       window.page.activatePage();
 
       isPageActive = true;
     }
+  };
+
+  const resetPinPosition = () => {
+    mainPin.style.left = `${mainPinPositionLeft}px`;
+    mainPin.style.top = `${mainPinPositionTop}px`;
+    isPageActive = false;
   };
 
   const addListenersForActivatePage = () => {
@@ -147,8 +152,18 @@
     return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + offsetY}`;
   };
 
+  const removePins = () => {
+    const pins = mapElement.querySelectorAll(`.${PIN_CLASS}`);
+
+    for (const pin of pins) {
+      if (!pin.classList.contains(MAIN_PIN_CLASS)) {
+        pin.remove();
+      }
+    }
+  };
+
   document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
-    if (evt.key === Key.ESCAPE) {
+    if (evt.key === window.util.Key.ESCAPE) {
       evt.preventDefault();
       window.card.closeAdCard();
     }
@@ -166,6 +181,8 @@
     toggleActivePinClass: (element) => element.classList.toggle(ACTIVE_PIN_CLASS),
     addListenersForActivatePage,
     removeListenersForActivatePage,
-    setFragmentPlace
+    setFragmentPlace,
+    resetPinPosition,
+    removePins
   };
 })();

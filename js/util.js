@@ -1,13 +1,23 @@
 'use strict';
 
 (() => {
+  const mainElement = document.querySelector(`main`);
+  const errorMessageTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
+  const successMessageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
+
   const Event = {
     CLICK: `click`,
     KEYDOWN: `keydown`,
     MOUSEDOWN: `mousedown`,
     MOUSEMOVE: `mousemove`,
     MOUSEUP: `mouseup`,
-    CHANGE: `change`
+    CHANGE: `change`,
+    SUBMIT: `submit`
+  };
+
+  const Key = {
+    ESCAPE: `Escape`,
+    ENTER: `Enter`
   };
 
   const declinationOfNumber = (number, words) => {
@@ -32,9 +42,58 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
+  let messageElement;
+
+  const removeMessage = () => {
+    messageElement.remove();
+  };
+
+  const onClick = (evt) => {
+    evt.preventDefault();
+    removeMessage();
+    removeListenersForMessage();
+  };
+
+  const onEscapeKeydown = (evt) => {
+    if (evt.key === Key.ESCAPE) {
+      evt.preventDefault();
+      removeMessage();
+      removeListenersForMessage();
+    }
+  };
+
+  const addListenersForMessage = () => {
+    document.addEventListener(Event.CLICK, onClick);
+    document.addEventListener(Event.KEYDOWN, onEscapeKeydown);
+  };
+
+  const removeListenersForMessage = () => {
+    document.removeEventListener(Event.CLICK, onClick);
+    document.removeEventListener(Event.KEYDOWN, onEscapeKeydown);
+  };
+
+  const showMessage = (type) => {
+    switch (type) {
+      case `success`:
+        messageElement = successMessageTemplate.cloneNode(true);
+        break;
+      case `error`:
+        messageElement = errorMessageTemplate.cloneNode(true);
+        break;
+      default:
+        break;
+    }
+
+    mainElement.appendChild(messageElement);
+
+    addListenersForMessage();
+  };
+
   window.util = {
     declinationOfNumber,
     renderErrorMessage,
-    Event
+    showMessage,
+    Event,
+    Key
   };
 })();

@@ -19,7 +19,12 @@
     }
   });
 
+  const resetForm = () => {
+    filterForm.reset();
+  };
+
   window.filter = {
-    getFormChildren: () => filterForm.children
+    getFormChildren: () => filterForm.children,
+    resetForm
   };
 })();
