@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+  const MAX_FILTERED_ADS = 5;
+
   const filterForm = document.querySelector(`.map__filters`);
 
   const housingType = filterForm.querySelector(`#housing-type`);
@@ -14,11 +16,9 @@
 
     const housingFeaturesElements = Array.from(housingFeatures.querySelectorAll(`.map__checkbox`));
 
-    const enabledHousingFeatures = housingFeaturesElements.filter((featuresValue) => {
-      return featuresValue.checked;
-    }).map((featuresValue) => {
-      return featuresValue.value;
-    });
+    const enabledHousingFeatures = housingFeaturesElements
+      .filter((featuresValue) => featuresValue.checked)
+      .map((featuresValue) => featuresValue.value);
 
     const compareArray = (firstArray, secondArray) => {
       for (let i = 0; i < firstArray.length; i++) {
@@ -37,6 +37,8 @@
 
     const checkHousingPrice = (selectedOption, dataOption) => {
       switch (selectedOption) {
+        case `any`:
+          return true;
         case `low`:
           return dataOption < priceTypeToValue.low;
         case `middle`:
@@ -48,20 +50,33 @@
       }
     };
 
-    const filteredAds = window.page.getSavedAds().filter((ad) => {
-      return housingType.value === `any` || ad.offer.type === housingType.value;
-    }).filter((ad) => {
-      return housingPrice.value === `any` || checkHousingPrice(housingPrice.value, ad.offer.price);
-    }).filter((ad) => {
-      return housingRooms.value === `any` || ad.offer.rooms === parseInt(housingRooms.value, 10);
-    }).filter((ad) => {
-      return housingGuests.value === `any` || ad.offer.guests === parseInt(housingGuests.value, 10);
-    }).filter((ad) => {
-      return enabledHousingFeatures.length === 0 || compareArray(enabledHousingFeatures, ad.offer.features);
-    });
+    const filteredArray = [];
+    const ads = window.page.getSavedAds();
 
-    window.page.saveFiltredAds(filteredAds);
-    window.map.renderPinsList(filteredAds);
+    const compareStrigs = (selectedOption, offerValue) => {
+      return selectedOption === offerValue.toString();
+    };
+
+    const compareValues = (selectedOption, offerValue, comparatorFunction) => {
+      return selectedOption === `any` || comparatorFunction(selectedOption, offerValue);
+    };
+
+    for (let i = 0; i < ads.length; i++) {
+      if (compareValues(housingType.value, ads[i].offer.type, compareStrigs)
+      && compareValues(housingRooms.value, ads[i].offer.rooms, compareStrigs)
+      && compareValues(housingGuests.value, ads[i].offer.guests, compareStrigs)
+      && checkHousingPrice(housingPrice.value, ads[i].offer.price)
+      && (enabledHousingFeatures.length === 0 || compareArray(enabledHousingFeatures, ads[i].offer.features))) {
+        filteredArray.push(ads[i]);
+
+        if (filteredArray.length === MAX_FILTERED_ADS) {
+          break;
+        }
+      }
+    }
+
+    window.page.saveFiltredAds(filteredArray);
+    window.map.renderPinsList(filteredArray);
   };
 
   filterForm.addEventListener(window.util.Event.CHANGE, window.debounce(onFilterFormChange));
