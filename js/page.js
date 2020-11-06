@@ -5,8 +5,8 @@
 
   const successHandler = (data) => {
     savedAds = data.filter((element) => element.offer);
-    window.map.renderPinsList(savedAds);
     saveFiltredAds(savedAds);
+    window.filter.filterAds();
     window.form.enableControls(window.filter.getFormChildren());
   };
 
