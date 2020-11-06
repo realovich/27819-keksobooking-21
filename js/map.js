@@ -3,7 +3,6 @@
 (() => {
   const PIN_WIDTH = 50;
   const PIN_HEIGHT = 70;
-  const MAX_NUMBER_ADS = 5;
   const FADED_CLASS = `map--faded`;
   const PIN_CLASS = `map__pin`;
   const ACTIVE_PIN_CLASS = `map__pin--active`;
@@ -51,12 +50,9 @@
       }
     }
 
-    const quantity = Math.min(ads.length, MAX_NUMBER_ADS);
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < quantity; i++) {
-      fragment.appendChild(renderPin(ads[i], i));
-    }
+    ads.forEach((ad, index) => fragment.appendChild(renderPin(ad, index)));
 
     pinsListElement.appendChild(fragment);
   };

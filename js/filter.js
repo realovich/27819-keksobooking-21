@@ -11,8 +11,8 @@
   const housingGuests = filterForm.querySelector(`#housing-guests`);
   const housingFeatures = filterForm.querySelector(`#housing-features`);
 
-  const onFilterFormChange = () => {
-    window.card.closeAdCard();
+  const filterAds = () => {
+    const filteredArray = [];
 
     const housingFeaturesElements = Array.from(housingFeatures.querySelectorAll(`.map__checkbox`));
 
@@ -50,24 +50,21 @@
       }
     };
 
-    const filteredArray = [];
-    const ads = window.page.getSavedAds();
-
-    const compareStrigs = (selectedOption, offerValue) => {
-      return selectedOption === offerValue.toString();
-    };
+    const compareStrigs = (selectedOption, offerValue) => selectedOption === offerValue.toString();
 
     const compareValues = (selectedOption, offerValue, comparatorFunction) => {
       return selectedOption === `any` || comparatorFunction(selectedOption, offerValue);
     };
 
-    for (let i = 0; i < ads.length; i++) {
-      if (compareValues(housingType.value, ads[i].offer.type, compareStrigs)
-      && compareValues(housingRooms.value, ads[i].offer.rooms, compareStrigs)
-      && compareValues(housingGuests.value, ads[i].offer.guests, compareStrigs)
-      && checkHousingPrice(housingPrice.value, ads[i].offer.price)
-      && (enabledHousingFeatures.length === 0 || compareArray(enabledHousingFeatures, ads[i].offer.features))) {
-        filteredArray.push(ads[i]);
+    for (const ad of window.page.getSavedAds()) {
+      if (
+        compareValues(housingType.value, ad.offer.type, compareStrigs) &&
+        compareValues(housingRooms.value, ad.offer.rooms, compareStrigs) &&
+        compareValues(housingGuests.value, ad.offer.guests, compareStrigs) &&
+        checkHousingPrice(housingPrice.value, ad.offer.price) &&
+        (enabledHousingFeatures.length === 0 || compareArray(enabledHousingFeatures, ad.offer.features))
+      ) {
+        filteredArray.push(ad);
 
         if (filteredArray.length === MAX_FILTERED_ADS) {
           break;
@@ -79,6 +76,12 @@
     window.map.renderPinsList(filteredArray);
   };
 
+  const onFilterFormChange = () => {
+    window.card.closeAdCard();
+
+    filterAds();
+  };
+
   filterForm.addEventListener(window.util.Event.CHANGE, window.debounce(onFilterFormChange));
 
   const resetForm = () => {
@@ -87,6 +90,7 @@
 
   window.filter = {
     getFormChildren: () => filterForm.children,
+    filterAds,
     resetForm
   };
 })();
