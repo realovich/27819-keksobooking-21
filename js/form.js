@@ -100,14 +100,14 @@ const errorHandler = () => {
   window.util.showMessage(`error`);
 };
 
-adForm.addEventListener(window.util.Event.SUBMIT, (evt) => {
+adForm.addEventListener(window.util.Evt.SUBMIT, (evt) => {
   const formData = new FormData(adForm);
 
   evt.preventDefault();
   window.backend.save(formData, successHandler, errorHandler);
 });
 
-resetButton.addEventListener(window.util.Event.CLICK, (evt) => {
+resetButton.addEventListener(window.util.Evt.CLICK, (evt) => {
   evt.preventDefault();
   window.page.resetPage();
 });
@@ -129,7 +129,7 @@ window.form = {
   setDefaultAddress,
   setCustomAddress,
   getFormChildren: () => adForm.children,
-  addChangeListener: () => adForm.addEventListener(window.util.Event.CHANGE, (evt) => window.form.addFormValidation(evt)),
+  addChangeListener: () => adForm.addEventListener(window.util.Evt.CHANGE, (evt) => window.form.addFormValidation(evt)),
   removeDisabledClass,
   resetForm
 };

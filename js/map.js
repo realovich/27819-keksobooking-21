@@ -87,12 +87,12 @@ const movePin = (evt) => {
   const onMouseUp = (upEvt) => {
     upEvt.preventDefault();
 
-    document.removeEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
-    document.removeEventListener(window.util.Event.MOUSEUP, onMouseUp);
+    document.removeEventListener(window.util.Evt.MOUSEMOVE, onMouseMove);
+    document.removeEventListener(window.util.Evt.MOUSEUP, onMouseUp);
   };
 
-  document.addEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
-  document.addEventListener(window.util.Event.MOUSEUP, onMouseUp);
+  document.addEventListener(window.util.Evt.MOUSEMOVE, onMouseMove);
+  document.addEventListener(window.util.Evt.MOUSEUP, onMouseUp);
 };
 
 let isPageActive;
@@ -126,15 +126,15 @@ const resetPinPosition = () => {
 };
 
 const addListenersForActivatePage = () => {
-  mainPin.addEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+  mainPin.addEventListener(window.util.Evt.MOUSEDOWN, onMainMouseBtn);
 
-  mainPin.addEventListener(window.util.Event.KEYDOWN, onEnterKey);
+  mainPin.addEventListener(window.util.Evt.KEYDOWN, onEnterKey);
 };
 
 const removeListenersForActivatePage = () => {
-  mainPin.removeEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+  mainPin.removeEventListener(window.util.Evt.MOUSEDOWN, onMainMouseBtn);
 
-  mainPin.removeEventListener(window.util.Event.KEYDOWN, onEnterKey);
+  mainPin.removeEventListener(window.util.Evt.KEYDOWN, onEnterKey);
 };
 
 const setFragmentPlace = (fragment) => {
@@ -155,14 +155,14 @@ const removePins = () => {
   }
 };
 
-document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
+document.addEventListener(window.util.Evt.KEYDOWN, (evt) => {
   if (evt.key === window.util.Key.ESCAPE) {
     evt.preventDefault();
     window.card.closeAdCard();
   }
 });
 
-pinsListElement.addEventListener(window.util.Event.CLICK, window.card.openAdCard);
+pinsListElement.addEventListener(window.util.Evt.CLICK, window.card.openAdCard);
 
 window.map = {
   renderPinsList,

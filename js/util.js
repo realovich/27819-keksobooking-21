@@ -4,7 +4,7 @@ const mainElement = document.querySelector(`main`);
 const errorMessageTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
 const successMessageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
 
-const Event = {
+const Evt = {
   CLICK: `click`,
   KEYDOWN: `keydown`,
   MOUSEDOWN: `mousedown`,
@@ -62,13 +62,13 @@ const onEscapeKeydown = (evt) => {
 };
 
 const addListenersForMessage = () => {
-  document.addEventListener(Event.CLICK, onClick);
-  document.addEventListener(Event.KEYDOWN, onEscapeKeydown);
+  document.addEventListener(Evt.CLICK, onClick);
+  document.addEventListener(Evt.KEYDOWN, onEscapeKeydown);
 };
 
 const removeListenersForMessage = () => {
-  document.removeEventListener(Event.CLICK, onClick);
-  document.removeEventListener(Event.KEYDOWN, onEscapeKeydown);
+  document.removeEventListener(Evt.CLICK, onClick);
+  document.removeEventListener(Evt.KEYDOWN, onEscapeKeydown);
 };
 
 const showMessage = (type) => {
@@ -92,6 +92,6 @@ window.util = {
   declinationOfNumber,
   renderErrorMessage,
   showMessage,
-  Event,
+  Evt,
   Key
 };

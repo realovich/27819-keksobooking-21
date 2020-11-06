@@ -81,7 +81,7 @@ const onFilterFormChange = () => {
   filterAds();
 };
 
-filterForm.addEventListener(window.util.Event.CHANGE, window.debounce(onFilterFormChange));
+filterForm.addEventListener(window.util.Evt.CHANGE, window.debounce(onFilterFormChange));
 
 const resetForm = () => {
   filterForm.reset();

@@ -118,7 +118,7 @@ const openAdCard = (evt) => {
     window.map.toggleActivePinClass(targetParent);
 
     const adCardClose = renderedAdCard.querySelector(`.popup__close`);
-    adCardClose.addEventListener(window.util.Event.CLICK, closeAdCard);
+    adCardClose.addEventListener(window.util.Evt.CLICK, closeAdCard);
   }
 };
 
