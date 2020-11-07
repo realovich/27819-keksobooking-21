@@ -1,182 +1,180 @@
 'use strict';
 
-(() => {
-  const PIN_WIDTH = 50;
-  const PIN_HEIGHT = 70;
-  const FADED_CLASS = `map--faded`;
-  const PIN_CLASS = `map__pin`;
-  const ACTIVE_PIN_CLASS = `map__pin--active`;
-  const MAIN_PIN_CLASS = `map__pin--main`;
+const PIN_WIDTH = 50;
+const PIN_HEIGHT = 70;
+const FADED_CLASS = `map--faded`;
+const PIN_CLASS = `map__pin`;
+const ACTIVE_PIN_CLASS = `map__pin--active`;
+const MAIN_PIN_CLASS = `map__pin--main`;
 
-  const MapLimit = {
-    TOP: 130,
-    BOTTOM: 630,
-  };
+const MapLimit = {
+  TOP: 130,
+  BOTTOM: 630,
+};
 
-  const mapElement = document.querySelector(`.map`);
-  const mainPin = mapElement.querySelector(`.${MAIN_PIN_CLASS}`);
-  const mainPinDefaultPositionLeft = mainPin.offsetLeft;
-  const mainPinDefaultPositionTop = mainPin.offsetTop;
+const mapElement = document.querySelector(`.map`);
+const mainPin = mapElement.querySelector(`.${MAIN_PIN_CLASS}`);
+const mainPinDefaultPositionLeft = mainPin.offsetLeft;
+const mainPinDefaultPositionTop = mainPin.offsetTop;
 
-  const mainPinWidth = mainPin.offsetWidth;
-  const mainPinHeight = mainPin.offsetHeight;
+const mainPinWidth = mainPin.offsetWidth;
+const mainPinHeight = mainPin.offsetHeight;
 
-  const minLeftPosition = 0 - (mainPinWidth / 2);
-  const maxLeftPosition = mapElement.offsetWidth - (mainPinWidth / 2);
-  const minTopPosition = MapLimit.TOP - mainPinHeight;
-  const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
+const minLeftPosition = 0 - (mainPinWidth / 2);
+const maxLeftPosition = mapElement.offsetWidth - (mainPinWidth / 2);
+const minTopPosition = MapLimit.TOP - mainPinHeight;
+const maxTopPosition = MapLimit.BOTTOM - mainPinHeight;
 
-  const pinsListElement = mapElement.querySelector(`.map__pins`);
-  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.${PIN_CLASS}`);
+const pinsListElement = mapElement.querySelector(`.map__pins`);
+const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.${PIN_CLASS}`);
 
-  const renderPin = (ad, index) => {
-    const pinElement = pinTemplate.cloneNode(true);
-    const pinElementImage = pinElement.querySelector(`img`);
+const renderPin = (ad, index) => {
+  const pinElement = pinTemplate.cloneNode(true);
+  const pinElementImage = pinElement.querySelector(`img`);
 
-    pinElement.setAttribute(`style`, `left: ${ad.location.x - (PIN_WIDTH / 2)}px; top: ${ad.location.y - PIN_HEIGHT}px`);
-    pinElement.dataset.pinId = index;
-    pinElementImage.src = ad.author.avatar;
-    pinElementImage.alt = ad.offer.title;
+  pinElement.setAttribute(`style`, `left: ${ad.location.x - (PIN_WIDTH / 2)}px; top: ${ad.location.y - PIN_HEIGHT}px`);
+  pinElement.dataset.pinId = index;
+  pinElementImage.src = ad.author.avatar;
+  pinElementImage.alt = ad.offer.title;
 
-    return pinElement;
-  };
+  return pinElement;
+};
 
-  const renderPinsList = (ads) => {
-    const existingPins = pinsListElement.querySelectorAll(`[type="button"]`);
+const renderPinsList = (ads) => {
+  const existingPins = pinsListElement.querySelectorAll(`[type="button"]`);
 
-    if (existingPins) {
-      for (let existingPin of existingPins) {
-        existingPin.remove();
-      }
+  if (existingPins) {
+    for (let existingPin of existingPins) {
+      existingPin.remove();
     }
+  }
 
-    const fragment = document.createDocumentFragment();
+  const fragment = document.createDocumentFragment();
 
-    ads.forEach((ad, index) => fragment.appendChild(renderPin(ad, index)));
+  ads.forEach((ad, index) => fragment.appendChild(renderPin(ad, index)));
 
-    pinsListElement.appendChild(fragment);
+  pinsListElement.appendChild(fragment);
+};
+
+const movePin = (evt) => {
+  let startСoordinates = {
+    x: evt.clientX,
+    y: evt.clientY
   };
 
-  const movePin = (evt) => {
-    let startСoordinates = {
-      x: evt.clientX,
-      y: evt.clientY
+  const onMouseMove = (moveEvt) => {
+    moveEvt.preventDefault();
+
+    const shift = {
+      x: startСoordinates.x - moveEvt.clientX,
+      y: startСoordinates.y - moveEvt.clientY
     };
 
-    const onMouseMove = (moveEvt) => {
-      moveEvt.preventDefault();
-
-      const shift = {
-        x: startСoordinates.x - moveEvt.clientX,
-        y: startСoordinates.y - moveEvt.clientY
-      };
-
-      startСoordinates = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      const newPositionX = mainPin.offsetLeft - shift.x;
-      const newPositionY = mainPin.offsetTop - shift.y;
-
-      mainPin.style.left = `${Math.max(Math.min(newPositionX, maxLeftPosition), minLeftPosition)}px`;
-      mainPin.style.top = `${Math.max(Math.min(newPositionY, maxTopPosition), minTopPosition)}px`;
-
-      window.form.setCustomAddress();
+    startСoordinates = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
     };
 
-    const onMouseUp = (upEvt) => {
-      upEvt.preventDefault();
+    const newPositionX = mainPin.offsetLeft - shift.x;
+    const newPositionY = mainPin.offsetTop - shift.y;
 
-      document.removeEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
-      document.removeEventListener(window.util.Event.MOUSEUP, onMouseUp);
-    };
+    mainPin.style.left = `${Math.max(Math.min(newPositionX, maxLeftPosition), minLeftPosition)}px`;
+    mainPin.style.top = `${Math.max(Math.min(newPositionY, maxTopPosition), minTopPosition)}px`;
 
-    document.addEventListener(window.util.Event.MOUSEMOVE, onMouseMove);
-    document.addEventListener(window.util.Event.MOUSEUP, onMouseUp);
+    window.form.setCustomAddress();
   };
 
-  let isPageActive;
+  const onMouseUp = (upEvt) => {
+    upEvt.preventDefault();
 
-  const onMainMouseBtn = (evt) => {
-    if (evt.button === 0) {
-      evt.preventDefault();
-
-      if (!isPageActive) {
-        window.page.activatePage();
-        isPageActive = true;
-      }
-
-      movePin(evt);
-    }
+    document.removeEventListener(window.util.Evt.MOUSEMOVE, onMouseMove);
+    document.removeEventListener(window.util.Evt.MOUSEUP, onMouseUp);
   };
 
-  const onEnterKey = (evt) => {
-    if (evt.key === window.util.Key.ENTER && !isPageActive) {
-      evt.preventDefault();
+  document.addEventListener(window.util.Evt.MOUSEMOVE, onMouseMove);
+  document.addEventListener(window.util.Evt.MOUSEUP, onMouseUp);
+};
+
+let isPageActive;
+
+const onMainMouseBtn = (evt) => {
+  if (evt.button === 0) {
+    evt.preventDefault();
+
+    if (!isPageActive) {
       window.page.activatePage();
-
       isPageActive = true;
     }
-  };
 
-  const resetPinPosition = () => {
-    mainPin.style.left = `${mainPinDefaultPositionLeft}px`;
-    mainPin.style.top = `${mainPinDefaultPositionTop}px`;
-    isPageActive = false;
-  };
+    movePin(evt);
+  }
+};
 
-  const addListenersForActivatePage = () => {
-    mainPin.addEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+const onEnterKey = (evt) => {
+  if (evt.key === window.util.Key.ENTER && !isPageActive) {
+    evt.preventDefault();
+    window.page.activatePage();
 
-    mainPin.addEventListener(window.util.Event.KEYDOWN, onEnterKey);
-  };
+    isPageActive = true;
+  }
+};
 
-  const removeListenersForActivatePage = () => {
-    mainPin.removeEventListener(window.util.Event.MOUSEDOWN, onMainMouseBtn);
+const resetPinPosition = () => {
+  mainPin.style.left = `${mainPinDefaultPositionLeft}px`;
+  mainPin.style.top = `${mainPinDefaultPositionTop}px`;
+  isPageActive = false;
+};
 
-    mainPin.removeEventListener(window.util.Event.KEYDOWN, onEnterKey);
-  };
+const addListenersForActivatePage = () => {
+  mainPin.addEventListener(window.util.Evt.MOUSEDOWN, onMainMouseBtn);
 
-  const setFragmentPlace = (fragment) => {
-    mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
-  };
+  mainPin.addEventListener(window.util.Evt.KEYDOWN, onEnterKey);
+};
 
-  const getPinCoordinates = (isDefault) => {
-    const offsetY = isDefault ? Math.round(mainPinHeight / 2) : mainPinHeight;
+const removeListenersForActivatePage = () => {
+  mainPin.removeEventListener(window.util.Evt.MOUSEDOWN, onMainMouseBtn);
 
-    return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + offsetY}`;
-  };
+  mainPin.removeEventListener(window.util.Evt.KEYDOWN, onEnterKey);
+};
 
-  const removePins = () => {
-    const pins = mapElement.querySelectorAll(`.${PIN_CLASS}`);
+const setFragmentPlace = (fragment) => {
+  mapElement.insertBefore(fragment, mapElement.querySelector(`.map__filters-container`));
+};
 
-    for (let i = 1; i < pins.length; i++) {
-      pins[i].remove();
-    }
-  };
+const getPinCoordinates = (isDefault) => {
+  const offsetY = isDefault ? Math.round(mainPinHeight / 2) : mainPinHeight;
 
-  document.addEventListener(window.util.Event.KEYDOWN, (evt) => {
-    if (evt.key === window.util.Key.ESCAPE) {
-      evt.preventDefault();
-      window.card.closeAdCard();
-    }
-  });
+  return `${parseInt(mainPin.style.left, 10) + Math.round(mainPinWidth / 2)}, ${parseInt(mainPin.style.top, 10) + offsetY}`;
+};
 
-  pinsListElement.addEventListener(window.util.Event.CLICK, window.card.openAdCard);
+const removePins = () => {
+  const pins = mapElement.querySelectorAll(`.${PIN_CLASS}`);
 
-  window.map = {
-    renderPinsList,
-    getPinCoordinates,
-    addFadedClass: () => mapElement.classList.add(FADED_CLASS),
-    removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
-    getActiveCard: () => mapElement.querySelector(`.map__card`),
-    getActivePin: () => mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`),
-    toggleActivePinClass: (element) => element.classList.toggle(ACTIVE_PIN_CLASS),
-    addListenersForActivatePage,
-    removeListenersForActivatePage,
-    setFragmentPlace,
-    resetPinPosition,
-    removePins
-  };
-})();
+  for (let i = 1; i < pins.length; i++) {
+    pins[i].remove();
+  }
+};
+
+document.addEventListener(window.util.Evt.KEYDOWN, (evt) => {
+  if (evt.key === window.util.Key.ESCAPE) {
+    evt.preventDefault();
+    window.card.closeAdCard();
+  }
+});
+
+pinsListElement.addEventListener(window.util.Evt.CLICK, window.card.openAdCard);
+
+window.map = {
+  renderPinsList,
+  getPinCoordinates,
+  addFadedClass: () => mapElement.classList.add(FADED_CLASS),
+  removeFadedClass: () => mapElement.classList.remove(FADED_CLASS),
+  getActiveCard: () => mapElement.querySelector(`.map__card`),
+  getActivePin: () => mapElement.querySelector(`.${ACTIVE_PIN_CLASS}`),
+  toggleActivePinClass: (element) => element.classList.toggle(ACTIVE_PIN_CLASS),
+  addListenersForActivatePage,
+  removeListenersForActivatePage,
+  setFragmentPlace,
+  resetPinPosition,
+  removePins
+};
