@@ -11,7 +11,8 @@ const Evt = {
   MOUSEMOVE: `mousemove`,
   MOUSEUP: `mouseup`,
   CHANGE: `change`,
-  SUBMIT: `submit`
+  SUBMIT: `submit`,
+  LOAD: `load`
 };
 
 const Key = {
@@ -35,7 +36,7 @@ const declinationOfNumber = (number, words) => {
 
 const renderErrorMessage = (message) => {
   const node = document.createElement(`div`);
-  node.style = `position: absoluet; left: 0; right: 0; background-color: tomato; padding: 4px; text-align: center;`;
+  node.style = `position: absolute; left: 0; right: 0; background-color: tomato; padding: 4px; text-align: center;`;
 
   node.textContent = message;
   document.body.insertAdjacentElement(`afterbegin`, node);

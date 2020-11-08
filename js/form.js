@@ -1,5 +1,7 @@
 'use strict';
 
+const FIELD_AVATAR_ID = `#avatar`;
+const FIELD_IMAGES_ID = `#images`;
 const FIELD_ADDRESS_ID = `#address`;
 const FIELD_ROOM_NUMBER_ID = `#room_number`;
 const FIELD_CAPACITY_ID = `#capacity`;
@@ -122,6 +124,26 @@ const resetForm = () => {
   addDisabledClass();
 };
 
+const previewAvatar = adForm.querySelector(`.ad-form-header__preview`);
+const previewPhoto = adForm.querySelector(`.ad-form__photo`);
+
+const addChangeListener = () => {
+  adForm.addEventListener(window.util.Evt.CHANGE, (evt) => {
+    addFormValidation(evt);
+    const {target} = evt;
+
+    if (!target) {
+      return;
+    }
+
+    if (target.matches(FIELD_AVATAR_ID)) {
+      window.preview(target, previewAvatar);
+    } else if (target.matches(FIELD_IMAGES_ID)) {
+      window.preview(target, previewPhoto);
+    }
+  });
+};
+
 window.form = {
   addFormValidation,
   enableControls,
@@ -129,7 +151,7 @@ window.form = {
   setDefaultAddress,
   setCustomAddress,
   getFormChildren: () => adForm.children,
-  addChangeListener: () => adForm.addEventListener(window.util.Evt.CHANGE, (evt) => window.form.addFormValidation(evt)),
+  addChangeListener,
   removeDisabledClass,
   resetForm
 };
