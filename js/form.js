@@ -37,14 +37,14 @@ const setCustomAddress = () => {
 };
 
 const disableControls = (controls) => {
-  for (let i = 0; i < controls.length; i++) {
-    controls[i].setAttribute(ControlAtributte.DISABLED, ``);
+  for (const control of controls) {
+    control.setAttribute(ControlAtributte.DISABLED, ``);
   }
 };
 
 const enableControls = (controls) => {
-  for (let i = 0; i < controls.length; i++) {
-    controls[i].removeAttribute(ControlAtributte.DISABLED, ``);
+  for (const control of controls) {
+    control.removeAttribute(ControlAtributte.DISABLED, ``);
   }
 };
 
@@ -80,15 +80,15 @@ const synchronizeCapacityRoomNumbersFields = () => {
   }
 };
 
+const typeToMinPrice = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
 const synchronizeTypePriceFields = () => {
   const fieldTypeValue = fieldType.value;
-
-  const typeToMinPrice = {
-    bungalow: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
 
   fieldPrice.setAttribute(ControlAtributte.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
   fieldPrice.setAttribute(ControlAtributte.MIN, typeToMinPrice[fieldTypeValue]);

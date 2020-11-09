@@ -1,7 +1,12 @@
 'use strict';
 
+const ROOM_ENDINGS = [`комната`, `комнаты`, `комнат`];
+const FOR_GUEST_ENDING = [`гостя`, `гостей`, `гостей`];
+
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
-const showConditions = (data) => (data === null || data === undefined || data === ``);
+
+// просто if (data) не подходит, так как '0' и также приводит к false
+const showConditions = (data) => (data === null || data === undefined || data === `` || data.length === 0);
 
 const hideElement = (cardElement, element) => {
   cardElement.querySelector(element).classList.add(`hidden`);
@@ -12,14 +17,6 @@ const fillElement = (cardElement, element, data) => {
     hideElement(cardElement, element);
   } else {
     cardElement.querySelector(element).textContent = data;
-  }
-};
-
-const fillPrice = (cardElement, element, data) => {
-  if (showConditions(data)) {
-    hideElement(cardElement, element);
-  } else {
-    cardElement.querySelector(element).textContent = `${data}₽/ночь`;
   }
 };
 
@@ -34,12 +31,12 @@ const fillFeatures = (cardElement, element, data) => {
 };
 
 const fillPhotos = (cardElement, element, data) => {
+  const photosContainer = cardElement.querySelector(element);
+  const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
+
   if (showConditions(data)) {
     hideElement(cardElement, element);
   } else {
-    const photosContainer = cardElement.querySelector(element);
-    const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
-
     data.forEach((photoSource) => {
       const photo = photoItem.cloneNode(true);
       photo.src = photoSource;
@@ -52,7 +49,9 @@ const fillCapacity = (cardElement, element, dataRooms, dataGuests) => {
   if (showConditions(dataRooms) || showConditions(dataGuests)) {
     hideElement(cardElement, element);
   } else {
-    cardElement.querySelector(element).textContent = `${dataRooms} ${window.util.declinationOfNumber(dataRooms, [`комната`, `комнаты`, `комнат`])} для ${dataGuests} ${window.util.declinationOfNumber(dataGuests, [`гостя`, `гостей`, `гостей`])}`;
+    const roomsPartText = `${dataRooms} ${window.util.declinationOfNumber(dataRooms, ROOM_ENDINGS)}`;
+    const guestPartText = `${dataGuests} ${window.util.declinationOfNumber(dataGuests, FOR_GUEST_ENDING)}`;
+    cardElement.querySelector(element).textContent = `${roomsPartText} для ${guestPartText}`;
   }
 };
 
@@ -72,19 +71,19 @@ const fillAvatar = (cardElement, element, data) => {
   }
 };
 
+const offerTypeToName = {
+  bungalow: `Бунгало`,
+  flat: `Квартира`,
+  house: `Дом`,
+  palace: `Дворец`
+};
+
 const renderCard = (ad) => {
   let cardElement = cardTemplate.cloneNode(true);
 
-  const offerTypeToName = {
-    bungalow: `Бунгало`,
-    flat: `Квартира`,
-    house: `Дом`,
-    palace: `Дворец`
-  };
-
   fillElement(cardElement, `.popup__title`, ad.offer.title);
   fillElement(cardElement, `.popup__text--address`, ad.offer.address);
-  fillPrice(cardElement, `.popup__text--price`, ad.offer.price);
+  fillElement(cardElement, `.popup__text--price`, `${ad.offer.price}₽/ночь`);
   fillElement(cardElement, `.popup__type`, offerTypeToName[ad.offer.type]);
   fillCapacity(cardElement, `.popup__text--capacity`, ad.offer.rooms, ad.offer.guests);
   fillTime(cardElement, `.popup__text--time`, ad.offer.checkin, ad.offer.checkout);
