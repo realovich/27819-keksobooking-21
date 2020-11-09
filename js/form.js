@@ -26,6 +26,7 @@ const fieldType = adForm.querySelector(FIELD_TYPE_ID);
 const fieldPrice = adForm.querySelector(FIELD_PRICE_ID);
 const fieldTimeIn = adForm.querySelector(FIELD_TIMEIN_ID);
 const fieldTimeOut = adForm.querySelector(FIELD_TIMEOUT_ID);
+const defaultAvatar = adForm.querySelector(`.ad-form-header__preview img`).cloneNode(true);
 
 const setDefaultAddress = () => {
   fieldAddress.value = window.map.getPinCoordinates(true);
@@ -119,6 +120,7 @@ const removeDisabledClass = () => adForm.classList.remove(AD_FORM_DISABLED_CLASS
 
 const resetForm = () => {
   adForm.reset();
+  resetPreview();
   synchronizeTypePriceFields();
   setCustomAddress();
   addDisabledClass();
@@ -127,9 +129,16 @@ const resetForm = () => {
 const previewAvatar = adForm.querySelector(`.ad-form-header__preview`);
 const previewPhoto = adForm.querySelector(`.ad-form__photo`);
 
+const resetPreview = () => {
+  previewPhoto.textContent = ``;
+  previewAvatar.textContent = ``;
+  previewAvatar.append(defaultAvatar);
+};
+
 const addChangeListener = () => {
   adForm.addEventListener(window.util.Evt.CHANGE, (evt) => {
     addFormValidation(evt);
+
     const {target} = evt;
 
     if (!target) {
