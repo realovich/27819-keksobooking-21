@@ -1,6 +1,7 @@
 'use strict';
 
 let savedAds;
+let filtredAds;
 
 const successHandler = (data) => {
   savedAds = data.filter((element) => element.offer);
@@ -8,8 +9,6 @@ const successHandler = (data) => {
   window.filter.filterAds();
   window.form.enableControls(window.filter.getFormChildren());
 };
-
-let filtredAds;
 
 const saveFiltredAds = (data) => {
   filtredAds = data;
