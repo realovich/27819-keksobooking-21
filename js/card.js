@@ -31,12 +31,12 @@ const fillFeatures = (cardElement, element, data) => {
 };
 
 const fillPhotos = (cardElement, element, data) => {
-  const photosContainer = cardElement.querySelector(element);
-  const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
-
   if (showConditions(data)) {
     hideElement(cardElement, element);
   } else {
+    const photosContainer = cardElement.querySelector(element);
+    const photoItem = photosContainer.removeChild(photosContainer.querySelector(`.popup__photo`));
+
     data.forEach((photoSource) => {
       const photo = photoItem.cloneNode(true);
       photo.src = photoSource;
