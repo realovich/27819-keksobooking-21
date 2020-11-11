@@ -15,7 +15,7 @@ const priceTypeToValue = {
   high: 50000
 };
 
-const compareStrigs = (selectedOption, offerValue) => selectedOption === offerValue.toString();
+const compareStrings = (selectedOption, offerValue) => selectedOption === offerValue.toString();
 
 const compareValues = (selectedOption, offerValue, comparatorFunction) => {
   return selectedOption === `any` || comparatorFunction(selectedOption, offerValue);
