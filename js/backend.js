@@ -26,7 +26,7 @@ const executeRequest = (method, {url, onLoad, onError, data}) => {
   xhr.open(method, url);
   xhr.timeout = REQUEST_TIMEOUT;
 
-  xhr.addEventListener(`load`, () => {
+  xhr.addEventListener(window.util.Evt.LOAD, () => {
     if (xhr.status === StatusCode.OK) {
       onLoad(xhr.response);
     } else {

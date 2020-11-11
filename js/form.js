@@ -1,5 +1,7 @@
 'use strict';
 
+const FIELD_AVATAR_ID = `#avatar`;
+const FIELD_IMAGES_ID = `#images`;
 const FIELD_ADDRESS_ID = `#address`;
 const FIELD_ROOM_NUMBER_ID = `#room_number`;
 const FIELD_CAPACITY_ID = `#capacity`;
@@ -27,6 +29,7 @@ const fieldType = adForm.querySelector(FIELD_TYPE_ID);
 const fieldPrice = adForm.querySelector(FIELD_PRICE_ID);
 const fieldTimeIn = adForm.querySelector(FIELD_TIMEIN_ID);
 const fieldTimeOut = adForm.querySelector(FIELD_TIMEOUT_ID);
+const defaultAvatar = adForm.querySelector(`.ad-form-header__preview img`).cloneNode(true);
 
 const setDefaultAddress = () => {
   fieldAddress.value = window.map.getPinCoordinates(true);
@@ -123,9 +126,37 @@ const removeDisabledClass = () => adForm.classList.remove(AD_FORM_DISABLED_CLASS
 
 const resetForm = () => {
   adForm.reset();
+  resetPreview();
   synchronizeTypePriceFields();
   setCustomAddress();
   addDisabledClass();
+};
+
+const previewAvatar = adForm.querySelector(`.ad-form-header__preview`);
+const previewPhoto = adForm.querySelector(`.ad-form__photo`);
+
+const resetPreview = () => {
+  previewPhoto.textContent = ``;
+  previewAvatar.textContent = ``;
+  previewAvatar.append(defaultAvatar);
+};
+
+const addChangeListener = () => {
+  adForm.addEventListener(window.util.Evt.CHANGE, (evt) => {
+    addFormValidation(evt);
+
+    const {target} = evt;
+
+    if (!target) {
+      return;
+    }
+
+    if (target.matches(FIELD_AVATAR_ID)) {
+      window.preview(target, previewAvatar);
+    } else if (target.matches(FIELD_IMAGES_ID)) {
+      window.preview(target, previewPhoto);
+    }
+  });
 };
 
 window.form = {
@@ -135,7 +166,7 @@ window.form = {
   setDefaultAddress,
   setCustomAddress,
   getFormChildren: () => adForm.children,
-  addChangeListener: () => adForm.addEventListener(window.util.Evt.CHANGE, (evt) => window.form.addFormValidation(evt)),
+  addChangeListener,
   removeDisabledClass,
   resetForm
 };
