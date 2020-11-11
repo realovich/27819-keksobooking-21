@@ -96,8 +96,6 @@ const synchronizeTypePriceFields = () => {
 
   fieldPrice.setAttribute(ControlAttribute.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
   fieldPrice.setAttribute(ControlAttribute.MIN, typeToMinPrice[fieldTypeValue]);
-  fieldPrice.setAttribute(ControlAttribute.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
-  fieldPrice.setAttribute(ControlAttribute.MIN, typeToMinPrice[fieldTypeValue]);
 };
 
 const successHandler = () => {
