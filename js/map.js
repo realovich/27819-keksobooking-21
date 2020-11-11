@@ -57,7 +57,7 @@ const renderPinsList = (ads) => {
 };
 
 const movePin = (evt) => {
-  let startСoordinates = {
+  let startCoordinates = {
     x: evt.clientX,
     y: evt.clientY
   };
@@ -66,11 +66,11 @@ const movePin = (evt) => {
     moveEvt.preventDefault();
 
     const shift = {
-      x: startСoordinates.x - moveEvt.clientX,
-      y: startСoordinates.y - moveEvt.clientY
+      x: startCoordinates.x - moveEvt.clientX,
+      y: startCoordinates.y - moveEvt.clientY
     };
 
-    startСoordinates = {
+    startCoordinates = {
       x: moveEvt.clientX,
       y: moveEvt.clientY
     };

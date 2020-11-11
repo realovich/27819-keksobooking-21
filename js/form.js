@@ -9,7 +9,10 @@ const FIELD_TIMEIN_ID = `#timein`;
 const FIELD_TIMEOUT_ID = `#timeout`;
 const AD_FORM_DISABLED_CLASS = `ad-form--disabled`;
 
-const ControlAtributte = {
+const LARGE_NUMBER_ROOMS = 100;
+const CAPACITY_NOT_FOR_GUESTS = 0;
+
+const ControlAttribute = {
   DISABLED: `disabled`,
   MIN: `min`,
   PLACEHOLDER: `placeholder`
@@ -34,14 +37,14 @@ const setCustomAddress = () => {
 };
 
 const disableControls = (controls) => {
-  for (let i = 0; i < controls.length; i++) {
-    controls[i].setAttribute(ControlAtributte.DISABLED, ``);
+  for (const control of controls) {
+    control.setAttribute(ControlAttribute.DISABLED, ``);
   }
 };
 
 const enableControls = (controls) => {
-  for (let i = 0; i < controls.length; i++) {
-    controls[i].removeAttribute(ControlAtributte.DISABLED, ``);
+  for (const control of controls) {
+    control.removeAttribute(ControlAttribute.DISABLED, ``);
   }
 };
 
@@ -64,31 +67,34 @@ const addFormValidation = (evt) => {
 };
 
 const synchronizeCapacityRoomNumbersFields = () => {
-  if (fieldRoomNumber.value === `1` && fieldCapacity.value !== `1`) {
-    fieldCapacity.setCustomValidity(`1 комната для 1-го гостя`);
-  } else if (fieldRoomNumber.value === `2` && (fieldCapacity.value > 2 || fieldCapacity.value === `0`)) {
-    fieldCapacity.setCustomValidity(`2 комнаты для 1-го или 2-х гостей`);
-  } else if (fieldRoomNumber.value === `3` && fieldCapacity.value < 1) {
-    fieldCapacity.setCustomValidity(`3 комнаты для 1-го, 2-х или 3-х гостей`);
-  } else if (fieldRoomNumber.value > 3 && fieldCapacity.value !== `0`) {
+  const capacityValue = Number(fieldCapacity.value);
+  const roomNumberValue = Number(fieldRoomNumber.value);
+
+  if (roomNumberValue === LARGE_NUMBER_ROOMS && capacityValue !== CAPACITY_NOT_FOR_GUESTS) {
     fieldCapacity.setCustomValidity(`100 комнат не для гостей`);
+  } else if (capacityValue === CAPACITY_NOT_FOR_GUESTS && roomNumberValue !== LARGE_NUMBER_ROOMS) {
+    fieldCapacity.setCustomValidity(`Не для гостей только 100 комнат`);
+  } else if (roomNumberValue < capacityValue) {
+    fieldCapacity.setCustomValidity(`Мало комнат для выбранного количества гостей`);
   } else {
     fieldCapacity.setCustomValidity(``);
   }
 };
 
+const typeToMinPrice = {
+  bungalow: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
 const synchronizeTypePriceFields = () => {
   const fieldTypeValue = fieldType.value;
 
-  const typeToMinPrice = {
-    bungalow: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
-
-  fieldPrice.setAttribute(ControlAtributte.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
-  fieldPrice.setAttribute(ControlAtributte.MIN, typeToMinPrice[fieldTypeValue]);
+  fieldPrice.setAttribute(ControlAttribute.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
+  fieldPrice.setAttribute(ControlAttribute.MIN, typeToMinPrice[fieldTypeValue]);
+  fieldPrice.setAttribute(ControlAttribute.PLACEHOLDER, typeToMinPrice[fieldTypeValue]);
+  fieldPrice.setAttribute(ControlAttribute.MIN, typeToMinPrice[fieldTypeValue]);
 };
 
 const successHandler = () => {

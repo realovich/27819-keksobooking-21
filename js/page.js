@@ -1,18 +1,17 @@
 'use strict';
 
 let savedAds;
+let filteredAds;
 
 const successHandler = (data) => {
   savedAds = data.filter((element) => element.offer);
-  saveFiltredAds(savedAds);
+  saveFilteredAds(savedAds);
   window.filter.filterAds();
   window.form.enableControls(window.filter.getFormChildren());
 };
 
-let filtredAds;
-
-const saveFiltredAds = (data) => {
-  filtredAds = data;
+const saveFilteredAds = (data) => {
+  filteredAds = data;
 };
 
 const errorHandler = (errorMessage) => {
@@ -48,7 +47,7 @@ window.page = {
   deactivatePage,
   activatePage,
   resetPage,
-  saveFiltredAds,
+  saveFilteredAds,
   getSavedAds: () => savedAds,
-  getFiltredAds: () => filtredAds,
+  getFilteredAds: () => filteredAds,
 };

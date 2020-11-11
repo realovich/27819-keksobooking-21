@@ -49,7 +49,7 @@ const filterAds = () => {
     }
   };
 
-  const compareStrigs = (selectedOption, offerValue) => selectedOption === offerValue.toString();
+  const compareStrings = (selectedOption, offerValue) => selectedOption === offerValue.toString();
 
   const compareValues = (selectedOption, offerValue, comparatorFunction) => {
     return selectedOption === `any` || comparatorFunction(selectedOption, offerValue);
@@ -57,9 +57,9 @@ const filterAds = () => {
 
   for (const ad of window.page.getSavedAds()) {
     if (
-      compareValues(housingType.value, ad.offer.type, compareStrigs) &&
-      compareValues(housingRooms.value, ad.offer.rooms, compareStrigs) &&
-      compareValues(housingGuests.value, ad.offer.guests, compareStrigs) &&
+      compareValues(housingType.value, ad.offer.type, compareStrings) &&
+      compareValues(housingRooms.value, ad.offer.rooms, compareStrings) &&
+      compareValues(housingGuests.value, ad.offer.guests, compareStrings) &&
       checkHousingPrice(housingPrice.value, ad.offer.price) &&
       (enabledHousingFeatures.length === 0 || compareArray(enabledHousingFeatures, ad.offer.features))
     ) {
@@ -71,7 +71,7 @@ const filterAds = () => {
     }
   }
 
-  window.page.saveFiltredAds(filteredArray);
+  window.page.saveFilteredAds(filteredArray);
   window.map.renderPinsList(filteredArray);
 };
 
